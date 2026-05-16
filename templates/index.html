@@ -790,6 +790,154 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 /* ── Canvas de fondo global ─────────────────────────────────────── */
 #bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.85; }
 
+/* ══════════════ VISTA MOCKUP ══════════════ */
+#v-mockup { gap: 0; padding: 0; justify-content: center; }
+
+/* Flash de cámara */
+#cam-flash {
+  position: fixed; inset: 0; z-index: 999;
+  background: #fff; opacity: 0; pointer-events: none;
+  transition: opacity .06s;
+}
+
+/* Visor de cámara — esquinas */
+.cam-frame {
+  position: fixed; inset: 0; z-index: 10; pointer-events: none;
+}
+.cam-corner {
+  position: absolute; width: 28px; height: 28px;
+  border-color: rgba(255,255,255,.85); border-style: solid;
+}
+.cam-corner.tl { top: 18px; left: 18px;  border-width: 3px 0 0 3px; }
+.cam-corner.tr { top: 18px; right: 18px; border-width: 3px 3px 0 0; }
+.cam-corner.bl { bottom: 18px; left: 18px;  border-width: 0 0 3px 3px; }
+.cam-corner.br { bottom: 18px; right: 18px; border-width: 0 3px 3px 0; }
+
+/* Línea de escaneo */
+.cam-scan {
+  position: fixed; left: 0; right: 0; height: 2px; top: 0;
+  background: linear-gradient(90deg, transparent, rgba(34,211,238,.8), transparent);
+  z-index: 11; pointer-events: none;
+  animation: camScan 2.5s linear infinite;
+}
+@keyframes camScan {
+  0%   { top: 10%; opacity: 1; }
+  90%  { top: 90%; opacity: 1; }
+  100% { top: 90%; opacity: 0; }
+}
+
+/* Tarjeta del mockup — tipo teléfono */
+.mockup-phone {
+  width: min(340px, 88vw);
+  background: #0a0a18;
+  border: 2px solid rgba(255,255,255,.15);
+  border-radius: 36px;
+  padding: 18px 16px 24px;
+  box-shadow: 0 0 0 6px rgba(255,255,255,.04),
+              0 0 60px rgba(124,58,237,.35),
+              0 20px 60px rgba(0,0,0,.6);
+  position: relative; z-index: 5;
+  animation: mockupPop .5s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes mockupPop {
+  from { opacity:0; transform: scale(.85) translateY(20px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+
+/* Notch del teléfono */
+.mockup-notch {
+  width: 80px; height: 10px;
+  background: rgba(255,255,255,.12); border-radius: 50px;
+  margin: 0 auto 14px;
+}
+
+/* App header dentro del mockup */
+.mockup-app-header {
+  background: linear-gradient(135deg, var(--accent), #22d3ee);
+  border-radius: 18px 18px 0 0;
+  padding: 16px 14px 12px;
+  text-align: center;
+}
+.mockup-app-name {
+  font-size: 1.4rem; font-weight: 900; color: #fff;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+.mockup-cat-tag {
+  display: inline-block; margin-top: 4px;
+  font-size: .72rem; font-weight: 700; color: rgba(255,255,255,.8);
+  background: rgba(255,255,255,.15); border-radius: 50px;
+  padding: 2px 10px; letter-spacing: .5px; text-transform: uppercase;
+}
+/* App body */
+.mockup-app-body {
+  background: rgba(255,255,255,.04);
+  border-radius: 0 0 18px 18px;
+  padding: 10px 12px 12px;
+}
+.mockup-section-title {
+  font-size: .65rem; font-weight: 800; color: rgba(255,255,255,.4);
+  letter-spacing: 1.2px; text-transform: uppercase; margin: 8px 0 5px;
+}
+.mockup-modules {
+  display: flex; flex-wrap: wrap; gap: 5px;
+}
+.mockup-mod-chip {
+  font-size: .7rem; padding: 3px 9px; border-radius: 50px; font-weight: 600;
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: #c084fc;
+}
+.mockup-desc {
+  font-size: .78rem; color: rgba(255,255,255,.65); line-height: 1.5;
+  margin-top: 4px;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mockup-team-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 10px; padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,.08);
+  font-size: .72rem; color: rgba(255,255,255,.5);
+}
+.mockup-team-name { font-weight: 700; color: rgba(255,255,255,.8); }
+
+/* Barra inferior del mockup + contador */
+.mockup-bottom {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  margin-top: 16px; position: relative; z-index: 5;
+}
+.mockup-shutter {
+  width: 52px; height: 52px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.7);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default;
+}
+.mockup-shutter-inner {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  animation: shutterPulse 1.8s ease-in-out infinite;
+}
+@keyframes shutterPulse {
+  0%,100% { transform: scale(1); opacity: .9; }
+  50%      { transform: scale(.88); opacity: .6; }
+}
+#mockup-countdown {
+  font-size: .85rem; color: rgba(255,255,255,.5);
+  font-weight: 700; letter-spacing: .5px;
+}
+
+/* Etiqueta "📸 CAPTURANDO" */
+.mockup-label {
+  position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
+  z-index: 12; font-size: .75rem; font-weight: 800; letter-spacing: 1.5px;
+  color: rgba(255,255,255,.85); text-transform: uppercase;
+  background: rgba(0,0,0,.5); padding: 4px 14px; border-radius: 50px;
+  border: 1px solid rgba(255,255,255,.2);
+  animation: labelBlink 1s ease-in-out infinite;
+}
+@keyframes labelBlink { 0%,100%{opacity:1} 50%{opacity:.4} }
+
 /* ── Logo escudo 3 fusionado (mix-blend-mode aplicado inline) ─────── */
 
 /* ── Reflectores / Spotlights (ranking page) ─────────────────────── */
@@ -1150,6 +1298,50 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
       <span id="timer-text">2:00</span>
     </div>
     <span class="timer-lbl">tiempo</span>
+  </div>
+</div>
+
+<!-- ══════════════ VISTA 5.5: MOCKUP ══════════════ -->
+<div class="vista" id="v-mockup">
+  <!-- Flash cámara -->
+  <div id="cam-flash"></div>
+  <!-- Visor esquinas -->
+  <div class="cam-frame">
+    <div class="cam-corner tl"></div>
+    <div class="cam-corner tr"></div>
+    <div class="cam-corner bl"></div>
+    <div class="cam-corner br"></div>
+  </div>
+  <!-- Línea de escaneo -->
+  <div class="cam-scan"></div>
+  <!-- Etiqueta capturando -->
+  <div class="mockup-label">📸 Capturando propuesta...</div>
+
+  <!-- Tarjeta tipo teléfono -->
+  <div class="mockup-phone">
+    <div class="mockup-notch"></div>
+    <div class="mockup-app-header">
+      <div class="mockup-app-name" id="mk-app-name">AppName</div>
+      <span class="mockup-cat-tag" id="mk-categoria">Categoría</span>
+    </div>
+    <div class="mockup-app-body">
+      <div class="mockup-section-title">Módulos IA</div>
+      <div class="mockup-modules" id="mk-modules"></div>
+      <div class="mockup-section-title" style="margin-top:10px">Descripción</div>
+      <div class="mockup-desc" id="mk-desc"></div>
+      <div class="mockup-team-row">
+        <span>Equipo</span>
+        <span class="mockup-team-name" id="mk-equipo"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botón shutter + countdown -->
+  <div class="mockup-bottom">
+    <div class="mockup-shutter">
+      <div class="mockup-shutter-inner"></div>
+    </div>
+    <div id="mockup-countdown">Analizando en 10s...</div>
   </div>
 </div>
 
@@ -2176,6 +2368,13 @@ async function enviarPropuesta() {
   clearInterval(state.timerInterval);
   state.appNombre = document.getElementById('inp-app').value.trim() || 'Mi App';
   const desc = document.getElementById('prop-desc').value.trim() || 'Sin descripción';
+
+  // Mostrar mockup 10 s mientras el fetch corre en paralelo
+  mostrarMockup(desc);
+  const fetchPromise = fetchEvaluacion(desc);
+  await esperarMockup();
+
+  // Pasar a evaluando
   showView('evaluando');
   _neuralStop = startNeuralAnim();
 
@@ -2188,22 +2387,10 @@ async function enviarPropuesta() {
 
   const evalStart = Date.now();
   try {
-    const res = await fetch('/api/evaluar', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        equipo:     state.equipo,
-        app_nombre: state.appNombre,
-        categoria:  state.categoria.nombre,
-        modulos:    state.modulosSeleccionados,
-        descripcion: desc,
-      }),
-    });
-    const data = await res.json();
-    // Esperar mínimo 4 segundos para que se disfrute la pantalla de evaluando
+    const data = await fetchPromise;
+    // Mínimo 4 s en pantalla evaluando
     const elapsed = Date.now() - evalStart;
-    const remaining = Math.max(0, 4000 - elapsed);
-    await new Promise(r => setTimeout(r, remaining));
+    await new Promise(r => setTimeout(r, Math.max(0, 4000 - elapsed)));
     clearInterval(msgInt);
     mostrarResultado(data);
   } catch {
@@ -2215,6 +2402,77 @@ async function enviarPropuesta() {
       mensaje: '¡Son el futuro de la tecnología! 🚀🌟',
     });
   }
+}
+
+// ── MOCKUP ───────────────────────────────────────────────────
+function mostrarMockup(desc) {
+  document.getElementById('mk-app-name').textContent  = state.appNombre;
+  document.getElementById('mk-categoria').textContent = state.categoria?.nombre || '';
+  document.getElementById('mk-desc').textContent      = desc;
+  document.getElementById('mk-equipo').textContent    = state.equipo;
+
+  const modsEl = document.getElementById('mk-modules');
+  modsEl.innerHTML = '';
+  state.modulosSeleccionados.forEach(nombre => {
+    const chip = document.createElement('span');
+    chip.className   = 'mockup-mod-chip';
+    chip.textContent = nombre;
+    modsEl.appendChild(chip);
+  });
+
+  showView('mockup');
+}
+
+async function fetchEvaluacion(desc) {
+  const res = await fetch('/api/evaluar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      equipo:      state.equipo,
+      app_nombre:  state.appNombre,
+      categoria:   state.categoria.nombre,
+      modulos:     state.modulosSeleccionados,
+      descripcion: desc,
+    }),
+  });
+  return await res.json();
+}
+
+function esperarMockup() {
+  return new Promise(resolve => {
+    const flashEl = document.getElementById('cam-flash');
+    const cdEl    = document.getElementById('mockup-countdown');
+    let seconds   = 10;
+
+    function flash() {
+      flashEl.style.opacity = '1';
+      setTimeout(() => { flashEl.style.opacity = '0'; }, 180);
+    }
+
+    // Disparos de cámara: inmediato, 3 s, 6 s, 9 s
+    flash();
+    const t1 = setTimeout(flash, 3000);
+    const t2 = setTimeout(flash, 6000);
+    const t3 = setTimeout(flash, 9000);
+
+    // Contador regresivo
+    cdEl.textContent = `Analizando en ${seconds}s…`;
+    const countInterval = setInterval(() => {
+      seconds--;
+      if (seconds > 0) {
+        cdEl.textContent = `Analizando en ${seconds}s…`;
+      } else {
+        cdEl.textContent = '¡Listo! ✓';
+        clearInterval(countInterval);
+      }
+    }, 1000);
+
+    setTimeout(() => {
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3);
+      clearInterval(countInterval);
+      resolve();
+    }, 10000);
+  });
 }
 
 // ── RESULTADO ────────────────────────────────────────────────
