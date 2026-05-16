@@ -860,37 +860,59 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   color: #67e8f9; border-radius: 50px; padding: 6px 22px;
 }
 
-/* ── Tarjetas de módulos ── */
+/* ── Cables eléctricos entre módulos y centro ── */
+#mk-cables-svg {
+  position: fixed; inset: 0; width: 100%; height: 100%;
+  z-index: 4; pointer-events: none;
+  overflow: visible;
+}
+.mk-cable-glow {
+  fill: none; stroke: rgba(34,211,238,.12); stroke-width: 5;
+}
+.mk-cable {
+  fill: none; stroke: rgba(34,211,238,.75); stroke-width: 2;
+  stroke-dasharray: 14 9;
+  filter: drop-shadow(0 0 4px rgba(34,211,238,.9));
+  animation: electricFlow .28s linear infinite;
+}
+.mk-cable:nth-child(4n+1) { animation-duration: .28s; }
+.mk-cable:nth-child(4n+2) { animation-duration: .32s; }
+.mk-cable:nth-child(4n+3) { animation-duration: .24s; }
+.mk-cable:nth-child(4n+0) { animation-duration: .30s; }
+@keyframes electricFlow { to { stroke-dashoffset: -23; } }
+
+/* ── Tarjetas de módulos — grandes y nítidas ── */
 .mk-node {
   position: fixed; z-index: 6;
-  width: clamp(130px, 18vw, 200px);
-  background: rgba(8,3,28,.92);
-  border-radius: 14px; overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(124,58,237,.3);
+  width: clamp(170px, 21vw, 250px);
+  background: rgba(8,3,28,.95);
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 8px 40px rgba(0,0,0,.6),
+              0 0 0 1px rgba(124,58,237,.35),
+              0 0 20px rgba(34,211,238,.08);
   transform: translate(-50%, -50%) scale(0);
   opacity: 0;
 }
 .mk-node.mk-in {
-  animation: mkNodeIn .65s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation: mkNodeIn .7s cubic-bezier(.34,1.56,.64,1) forwards;
 }
 @keyframes mkNodeIn {
-  from { opacity:0; transform:translate(-50%,-50%) scale(.2) rotate(-8deg); }
-  to   { opacity:1; transform:translate(-50%,-50%) scale(1)  rotate(0deg);  }
+  from { opacity:0; transform:translate(-50%,-50%) scale(.15) rotate(-10deg); }
+  to   { opacity:1; transform:translate(-50%,-50%) scale(1)   rotate(0deg);   }
 }
 .mk-node-accent {
-  height: 3px;
+  height: 4px;
   background: linear-gradient(90deg, #7c3aed, #22d3ee);
+  box-shadow: 0 0 10px rgba(34,211,238,.6);
 }
-.mk-node-body {
-  padding: 10px 14px 12px;
-}
+.mk-node-body { padding: 12px 16px 14px; }
 .mk-node-num {
-  font-size: .6rem; font-weight: 900; letter-spacing: 2.5px;
-  color: rgba(34,211,238,.5); text-transform: uppercase; margin-bottom: 5px;
+  font-size: .62rem; font-weight: 900; letter-spacing: 3px;
+  color: rgba(34,211,238,.55); text-transform: uppercase; margin-bottom: 6px;
 }
 .mk-node-name {
-  font-size: clamp(.72rem, 1.4vw, .9rem); font-weight: 700;
-  color: #e8d8ff; line-height: 1.3;
+  font-size: clamp(.82rem, 1.5vw, 1rem); font-weight: 700;
+  color: #ede8ff; line-height: 1.3;
 }
 
 /* ── Tarjeta de descripción al fondo ── */
@@ -1204,7 +1226,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- 3 columnas -->
   <div id="modulos-columns">
     <div class="mod-col col-sensores">
-      <div class="col-header">📡 Sensores</div>
+      <div class="col-header">📡 Sensor</div>
       <div id="col-sensores-cards" class="col-cards"></div>
     </div>
     <div class="mod-col col-piensa">
@@ -1328,6 +1350,16 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
     <div id="mk-app-name">AppName</div>
     <span id="mk-categoria">Categoría</span>
   </div>
+
+  <!-- Cables eléctricos SVG (generados por JS) -->
+  <svg id="mk-cables-svg">
+    <defs>
+      <filter id="mk-glow-filter" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+  </svg>
 
   <!-- Nodos de módulos (generados por JS, position:fixed) -->
 
@@ -2404,14 +2436,14 @@ async function enviarPropuesta() {
 // ── MOCKUP ───────────────────────────────────────────────────
 let _mkCanvasStop = null;
 
-// Posiciones fijas de los nodos (vw/vh del viewport)
+// Posiciones de los nodos (vw/vh) — más cerca del centro para que los cables sean cortos y visibles
 const MK_NODE_POS = [
-  { x:  9, y: 18 },   // arriba-izq
-  { x: 76, y: 14 },   // arriba-der
-  { x:  5, y: 50 },   // medio-izq
-  { x: 84, y: 53 },   // medio-der
-  { x: 10, y: 78 },   // abajo-izq
-  { x: 75, y: 80 },   // abajo-der
+  { x: 16, y: 20 },   // arriba-izq
+  { x: 68, y: 16 },   // arriba-der
+  { x:  7, y: 46 },   // medio-izq
+  { x: 80, y: 48 },   // medio-der
+  { x: 16, y: 70 },   // abajo-izq
+  { x: 68, y: 73 },   // abajo-der
 ];
 
 function mostrarMockup(desc) {
@@ -2437,11 +2469,47 @@ function mostrarMockup(desc) {
   canvas.height = window.innerHeight;
   _mkCanvasStop = startBrainCanvas(canvas);
 
-  // Crear tarjetas de módulos (ocultas, se animan después)
+  // Limpiar cables SVG anteriores (preservar defs)
+  const cableSvg = document.getElementById('mk-cables-svg');
+  Array.from(cableSvg.children).forEach(c => { if (c.tagName !== 'defs') c.remove(); });
+
+  // Crear tarjetas de módulos y cables eléctricos
   const W = window.innerWidth, H = window.innerHeight;
+  const cx = W * .5, cy = H * .42;   // posición del título de la app
+
   state.modulosSeleccionados.forEach((nombre, i) => {
     if (i >= MK_NODE_POS.length) return;
-    const p   = MK_NODE_POS[i];
+    const p  = MK_NODE_POS[i];
+    const nx = p.x / 100 * W;
+    const ny = p.y / 100 * H;
+
+    // ── Cable: línea glow + línea de corriente animada ──
+    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    glow.setAttribute('x1', nx); glow.setAttribute('y1', ny);
+    glow.setAttribute('x2', cx); glow.setAttribute('y2', cy);
+    glow.setAttribute('class', 'mk-cable-glow');
+    cableSvg.appendChild(glow);
+
+    const cable = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    cable.setAttribute('x1', nx); cable.setAttribute('y1', ny);
+    cable.setAttribute('x2', cx); cable.setAttribute('y2', cy);
+    cable.setAttribute('class', 'mk-cable');
+    cable.style.animationDelay = `${-i * 0.05}s`;
+    cableSvg.appendChild(cable);
+
+    // ── Punto de corriente que viaja por el cable ──
+    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    dot.setAttribute('r', '4');
+    dot.setAttribute('fill', '#c084fc');
+    dot.setAttribute('filter', 'url(#mk-glow-filter)');
+    const motion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
+    motion.setAttribute('dur', `${.9 + i * .15}s`);
+    motion.setAttribute('repeatCount', 'indefinite');
+    motion.setAttribute('path', `M${nx},${ny} L${cx},${cy}`);
+    dot.appendChild(motion);
+    cableSvg.appendChild(dot);
+
+    // ── Tarjeta del nodo ──
     const node = document.createElement('div');
     node.className = 'mk-node';
     node.innerHTML = `
@@ -2452,7 +2520,7 @@ function mostrarMockup(desc) {
       </div>`;
     node.style.left = p.x + 'vw';
     node.style.top  = p.y + 'vh';
-    document.body.appendChild(node);   // body para que fixed funcione bien
+    document.body.appendChild(node);
   });
 
   // Secuencia de aparición
