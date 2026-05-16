@@ -857,10 +857,10 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   0%,100% { filter: drop-shadow(0 0 28px rgba(34,150,255,.7)) drop-shadow(0 0 55px rgba(34,150,255,.35)); }
   50%     { filter: drop-shadow(0 0 45px rgba(100,180,255,.9)) drop-shadow(0 0 80px rgba(34,150,255,.55)); }
 }
-/* Nombre sobre el cerebro */
+/* Nombre arriba del cerebro */
 #mk-app-name {
   font-size: clamp(2.2rem, 7vw, 5rem); font-weight: 900; line-height: 1;
-  letter-spacing: -2px; margin-top: -20px; /* se monta sobre el cerebro */
+  letter-spacing: -2px; margin-bottom: 10px;
   background: linear-gradient(140deg, #ffffff 0%, #c084fc 40%, #22d3ee 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 0 20px rgba(192,132,252,.9));
@@ -1356,11 +1356,11 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- Etiqueta -->
   <div class="mockup-label">📸 Generando app...</div>
 
-  <!-- Centro: cerebro + nombre app -->
+  <!-- Centro: nombre arriba, cerebro abajo -->
   <div id="mk-center-block">
-    <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
     <div id="mk-app-name">AppName</div>
     <span id="mk-categoria">Categoría</span>
+    <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
   </div>
 
   <!-- Cables eléctricos SVG (generados por JS) -->
@@ -2451,10 +2451,12 @@ function mostrarMockup(desc) {
   document.getElementById('mk-categoria').textContent    = state.categoria?.nombre || '';
   document.getElementById('mk-equipo-label').textContent = state.equipo;
 
-  // Limpiar nodos y resetear animaciones (funciona en la 2ª+ vez)
+  // Limpiar nodos y resetear animaciones fiablemente (funciona en la 2ª+ vez)
   document.querySelectorAll('.mk-node').forEach(n => n.remove());
   const centerBlock = document.getElementById('mk-center-block');
   centerBlock.classList.remove('mk-in');
+  centerBlock.style.animation = 'none';   // fuerza reset de animación
+  centerBlock.style.opacity   = '0';
 
   showView('mockup');
 
@@ -2529,9 +2531,11 @@ function mostrarMockup(desc) {
     document.body.appendChild(node);
   });
 
-  // Secuencia de aparición
+  // Secuencia de aparición — reset fiable antes de lanzar animación
   setTimeout(() => {
-    void centerBlock.offsetWidth;
+    centerBlock.style.animation = '';  // elimina el override inline
+    centerBlock.style.opacity   = '';
+    void centerBlock.offsetWidth;      // reflow para que el browser registre el cambio
     centerBlock.classList.add('mk-in');
   }, 400);
 
