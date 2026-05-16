@@ -831,9 +831,9 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
 }
 
-/* ── Centro: cerebro + nombre app ── */
+/* ── Cerebro — exactamente en la mitad ── */
 #mk-center-block {
-  position: fixed; left: 50%; top: 38%;
+  position: fixed; left: 50%; top: 50%;
   transform: translate(-50%, -50%);
   text-align: center; z-index: 5; pointer-events: none;
   opacity: 0; transition: none;
@@ -845,11 +845,10 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   from { opacity:0; transform:translate(-50%,-50%) scale(.4); }
   to   { opacity:1; transform:translate(-50%,-50%) scale(1);  }
 }
-/* Cerebro detrás del nombre */
 #mk-brain-img {
   width: clamp(200px, 28vw, 380px);
   display: block; margin: 0 auto;
-  opacity: .85;
+  opacity: .88;
   filter: drop-shadow(0 0 30px rgba(34,150,255,.7)) drop-shadow(0 0 60px rgba(34,150,255,.4));
   animation: brainPulse 3s ease-in-out infinite;
 }
@@ -857,20 +856,27 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   0%,100% { filter: drop-shadow(0 0 28px rgba(34,150,255,.7)) drop-shadow(0 0 55px rgba(34,150,255,.35)); }
   50%     { filter: drop-shadow(0 0 45px rgba(100,180,255,.9)) drop-shadow(0 0 80px rgba(34,150,255,.55)); }
 }
-/* Nombre debajo del cerebro con 1 cm de separación */
+
+/* ── Nombre de la app — flota arriba independiente ── */
+#mk-app-name-block {
+  position: fixed; left: 50%; top: 12%;
+  transform: translateX(-50%);
+  text-align: center; z-index: 5; pointer-events: none;
+  opacity: 0; transition: none;
+}
+#mk-app-name-block.mk-in {
+  animation: mkNameIn .8s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes mkNameIn {
+  from { opacity:0; transform:translateX(-50%) translateY(-20px); }
+  to   { opacity:1; transform:translateX(-50%) translateY(0);     }
+}
 #mk-app-name {
-  font-size: clamp(2.2rem, 7vw, 5rem); font-weight: 900; line-height: 1;
-  letter-spacing: -2px; margin-top: 1cm;
+  font-size: clamp(2.4rem, 7.5vw, 5.5rem); font-weight: 900; line-height: 1;
+  letter-spacing: -2px;
   background: linear-gradient(140deg, #ffffff 0%, #c084fc 40%, #22d3ee 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 20px rgba(192,132,252,.9));
-}
-#mk-categoria {
-  display: inline-block; margin-top: 10px;
-  font-size: clamp(.78rem, 1.8vw, 1rem); font-weight: 700;
-  letter-spacing: 2px; text-transform: uppercase;
-  background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.5);
-  color: #67e8f9; border-radius: 50px; padding: 6px 22px;
+  filter: drop-shadow(0 0 22px rgba(192,132,252,.9));
 }
 
 /* ── Cables eléctricos entre módulos y centro ── */
@@ -1356,11 +1362,14 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- Etiqueta -->
   <div class="mockup-label">📸 Generando app...</div>
 
-  <!-- Centro: cerebro arriba, nombre debajo -->
+  <!-- Nombre de la app arriba (independiente) -->
+  <div id="mk-app-name-block">
+    <div id="mk-app-name">AppName</div>
+  </div>
+
+  <!-- Cerebro en la mitad exacta -->
   <div id="mk-center-block">
     <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
-    <div id="mk-app-name">AppName</div>
-    <span id="mk-categoria">Categoría</span>
   </div>
 
   <!-- Cables eléctricos SVG (generados por JS) -->
@@ -2448,15 +2457,17 @@ let _mkCanvasStop = null;
 function mostrarMockup(desc) {
   // Contenido
   document.getElementById('mk-app-name').textContent     = state.appNombre;
-  document.getElementById('mk-categoria').textContent    = state.categoria?.nombre || '';
   document.getElementById('mk-equipo-label').textContent = state.equipo;
 
   // Limpiar nodos y resetear animaciones fiablemente (funciona en la 2ª+ vez)
   document.querySelectorAll('.mk-node').forEach(n => n.remove());
-  const centerBlock = document.getElementById('mk-center-block');
-  centerBlock.classList.remove('mk-in');
-  centerBlock.style.animation = 'none';   // fuerza reset de animación
-  centerBlock.style.opacity   = '0';
+  const centerBlock  = document.getElementById('mk-center-block');
+  const nameBlock    = document.getElementById('mk-app-name-block');
+  [centerBlock, nameBlock].forEach(el => {
+    el.classList.remove('mk-in');
+    el.style.animation = 'none';
+    el.style.opacity   = '0';
+  });
 
   showView('mockup');
 
@@ -2473,7 +2484,7 @@ function mostrarMockup(desc) {
 
   // Posiciones en círculo equidistante alrededor del centro
   const W  = window.innerWidth,  H  = window.innerHeight;
-  const cx = W * .5,             cy = H * .38;   // alineado con top:38% del bloque central
+  const cx = W * .5,             cy = H * .50;   // cerebro en el centro exacto
   const rx = W * .30,            ry = H * .30;   // radio elipse (más ancha que alta)
   const n  = state.modulosSeleccionados.length;
 
@@ -2535,10 +2546,13 @@ function mostrarMockup(desc) {
 
   // Secuencia de aparición — reset fiable antes de lanzar animación
   setTimeout(() => {
-    centerBlock.style.animation = '';  // elimina el override inline
-    centerBlock.style.opacity   = '';
-    void centerBlock.offsetWidth;      // reflow para que el browser registre el cambio
+    [centerBlock, nameBlock].forEach(el => {
+      el.style.animation = '';
+      el.style.opacity   = '';
+      void el.offsetWidth;
+    });
     centerBlock.classList.add('mk-in');
+    nameBlock.classList.add('mk-in');
   }, 400);
 
   document.querySelectorAll('.mk-node').forEach((node, i) => {
