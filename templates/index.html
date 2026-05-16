@@ -881,63 +881,46 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 .mk-cable:nth-child(4n+0) { animation-duration: .30s; }
 @keyframes electricFlow { to { stroke-dashoffset: -23; } }
 
-/* ── Tarjetas de módulos — grandes y nítidas ── */
+/* ── Tarjetas de módulos — diseño juvenil/pop ── */
 .mk-node {
   position: fixed; z-index: 6;
-  width: clamp(170px, 21vw, 250px);
-  background: rgba(8,3,28,.95);
-  border-radius: 16px; overflow: hidden;
-  box-shadow: 0 8px 40px rgba(0,0,0,.6),
-              0 0 0 1px rgba(124,58,237,.35),
-              0 0 20px rgba(34,211,238,.08);
+  width: clamp(155px, 19vw, 230px);
+  background: linear-gradient(135deg, #3b0764 0%, #6d28d9 45%, #0e7490 100%);
+  border-radius: 22px;
+  padding: 14px 18px 15px;
+  box-shadow: 0 10px 40px rgba(109,40,217,.55),
+              0 0 0 1.5px rgba(255,255,255,.15),
+              0 0 35px rgba(34,211,238,.18);
   transform: translate(-50%, -50%) scale(0);
-  opacity: 0;
+  opacity: 0; text-align: center;
 }
 .mk-node.mk-in {
-  animation: mkNodeIn .7s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation: mkNodeIn .65s cubic-bezier(.34,1.56,.64,1) forwards;
 }
 @keyframes mkNodeIn {
-  from { opacity:0; transform:translate(-50%,-50%) scale(.15) rotate(-10deg); }
-  to   { opacity:1; transform:translate(-50%,-50%) scale(1)   rotate(0deg);   }
+  from { opacity:0; transform:translate(-50%,-50%) scale(.1) rotate(-12deg); }
+  to   { opacity:1; transform:translate(-50%,-50%) scale(1)  rotate(0deg);   }
 }
-.mk-node-accent {
-  height: 4px;
-  background: linear-gradient(90deg, #7c3aed, #22d3ee);
-  box-shadow: 0 0 10px rgba(34,211,238,.6);
-}
-.mk-node-body { padding: 12px 16px 14px; }
 .mk-node-num {
-  font-size: .62rem; font-weight: 900; letter-spacing: 3px;
-  color: rgba(34,211,238,.55); text-transform: uppercase; margin-bottom: 6px;
+  display: inline-block;
+  font-size: .58rem; font-weight: 900; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(255,255,255,.6);
+  background: rgba(255,255,255,.12); border-radius: 50px;
+  padding: 2px 10px; margin-bottom: 8px;
 }
 .mk-node-name {
-  font-size: clamp(.82rem, 1.5vw, 1rem); font-weight: 700;
-  color: #ede8ff; line-height: 1.3;
+  font-size: clamp(.88rem, 1.6vw, 1.08rem); font-weight: 800;
+  color: #fff; line-height: 1.25; letter-spacing: -.3px;
+  text-shadow: 0 1px 8px rgba(0,0,0,.4);
 }
 
-/* ── Tarjeta de descripción al fondo ── */
-#mk-desc-card {
-  position: fixed; bottom: clamp(48px,8vh,75px); left: 50%;
+/* ── Equipo abajo centrado ── */
+#mk-equipo-label {
+  position: fixed; bottom: clamp(48px,8vh,70px); left: 50%;
   transform: translateX(-50%);
-  width: min(600px, 86vw);
-  background: rgba(8,3,28,.8); backdrop-filter: blur(12px);
-  border: 1px solid rgba(192,132,252,.18); border-radius: 18px;
-  padding: 16px 22px 14px; text-align: center; z-index: 6;
-  opacity: 0;
-}
-#mk-desc-card.mk-in {
-  animation: mkPopIn .7s cubic-bezier(.34,1.56,.64,1) .3s forwards;
-}
-#mk-desc {
-  font-size: clamp(.76rem, 1.6vw, .92rem); color: rgba(255,255,255,.52);
-  line-height: 1.6; font-style: italic;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-#mk-equipo {
-  display: block; margin-top: 8px;
-  font-size: clamp(.64rem, 1.3vw, .76rem); font-weight: 900;
-  color: rgba(255,255,255,.25); letter-spacing: 2.5px; text-transform: uppercase;
+  font-size: clamp(.7rem, 1.5vw, .88rem); font-weight: 900;
+  color: rgba(255,255,255,.3); letter-spacing: 2.5px; text-transform: uppercase;
+  z-index: 6; pointer-events: none;
 }
 
 /* ── Contador ── */
@@ -1363,11 +1346,8 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 
   <!-- Nodos de módulos (generados por JS, position:fixed) -->
 
-  <!-- Descripción + equipo -->
-  <div id="mk-desc-card">
-    <div id="mk-desc"></div>
-    <div id="mk-equipo"></div>
-  </div>
+  <!-- Equipo -->
+  <div id="mk-equipo-label"></div>
 
   <!-- Contador -->
   <div id="mockup-countdown">Generando…</div>
@@ -2436,29 +2416,16 @@ async function enviarPropuesta() {
 // ── MOCKUP ───────────────────────────────────────────────────
 let _mkCanvasStop = null;
 
-// Posiciones de los nodos (vw/vh) — más cerca del centro para que los cables sean cortos y visibles
-const MK_NODE_POS = [
-  { x: 16, y: 20 },   // arriba-izq
-  { x: 68, y: 16 },   // arriba-der
-  { x:  7, y: 46 },   // medio-izq
-  { x: 80, y: 48 },   // medio-der
-  { x: 16, y: 70 },   // abajo-izq
-  { x: 68, y: 73 },   // abajo-der
-];
-
 function mostrarMockup(desc) {
   // Contenido
-  document.getElementById('mk-app-name').textContent  = state.appNombre;
-  document.getElementById('mk-categoria').textContent = state.categoria?.nombre || '';
-  document.getElementById('mk-desc').textContent      = desc;
-  document.getElementById('mk-equipo').textContent    = state.equipo;
+  document.getElementById('mk-app-name').textContent     = state.appNombre;
+  document.getElementById('mk-categoria').textContent    = state.categoria?.nombre || '';
+  document.getElementById('mk-equipo-label').textContent = state.equipo;
 
-  // Limpiar nodos y resetear animaciones (para que funcione la 2ª vez)
+  // Limpiar nodos y resetear animaciones (funciona en la 2ª+ vez)
   document.querySelectorAll('.mk-node').forEach(n => n.remove());
   const centerBlock = document.getElementById('mk-center-block');
-  const descCard    = document.getElementById('mk-desc-card');
   centerBlock.classList.remove('mk-in');
-  descCard.classList.remove('mk-in');
 
   showView('mockup');
 
@@ -2473,53 +2440,53 @@ function mostrarMockup(desc) {
   const cableSvg = document.getElementById('mk-cables-svg');
   Array.from(cableSvg.children).forEach(c => { if (c.tagName !== 'defs') c.remove(); });
 
-  // Crear tarjetas de módulos y cables eléctricos
-  const W = window.innerWidth, H = window.innerHeight;
-  const cx = W * .5, cy = H * .42;   // posición del título de la app
+  // Posiciones en círculo equidistante alrededor del centro
+  const W  = window.innerWidth,  H  = window.innerHeight;
+  const cx = W * .5,             cy = H * .42;
+  const rx = W * .30,            ry = H * .30;   // radio elipse (más ancha que alta)
+  const n  = state.modulosSeleccionados.length;
 
   state.modulosSeleccionados.forEach((nombre, i) => {
-    if (i >= MK_NODE_POS.length) return;
-    const p  = MK_NODE_POS[i];
-    const nx = p.x / 100 * W;
-    const ny = p.y / 100 * H;
+    // Ángulo: empezamos desde arriba (-π/2) y giramos equidistante
+    const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
+    const nx = cx + rx * Math.cos(angle);
+    const ny = cy + ry * Math.sin(angle);
 
-    // ── Cable: línea glow + línea de corriente animada ──
-    const glow = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    // ── Cable: línea glow + corriente animada ──
+    const ns = 'http://www.w3.org/2000/svg';
+    const glow = document.createElementNS(ns, 'line');
     glow.setAttribute('x1', nx); glow.setAttribute('y1', ny);
     glow.setAttribute('x2', cx); glow.setAttribute('y2', cy);
     glow.setAttribute('class', 'mk-cable-glow');
     cableSvg.appendChild(glow);
 
-    const cable = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    const cable = document.createElementNS(ns, 'line');
     cable.setAttribute('x1', nx); cable.setAttribute('y1', ny);
     cable.setAttribute('x2', cx); cable.setAttribute('y2', cy);
     cable.setAttribute('class', 'mk-cable');
-    cable.style.animationDelay = `${-i * 0.05}s`;
+    cable.style.animationDelay = `${-i * 0.06}s`;
     cableSvg.appendChild(cable);
 
-    // ── Punto de corriente que viaja por el cable ──
-    const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    dot.setAttribute('r', '4');
-    dot.setAttribute('fill', '#c084fc');
+    // ── Punto de corriente viajando por el cable ──
+    const dot = document.createElementNS(ns, 'circle');
+    dot.setAttribute('r', '5');
+    dot.setAttribute('fill', '#e879f9');
     dot.setAttribute('filter', 'url(#mk-glow-filter)');
-    const motion = document.createElementNS('http://www.w3.org/2000/svg', 'animateMotion');
-    motion.setAttribute('dur', `${.9 + i * .15}s`);
+    const motion = document.createElementNS(ns, 'animateMotion');
+    motion.setAttribute('dur', `${.8 + i * .12}s`);
     motion.setAttribute('repeatCount', 'indefinite');
     motion.setAttribute('path', `M${nx},${ny} L${cx},${cy}`);
     dot.appendChild(motion);
     cableSvg.appendChild(dot);
 
-    // ── Tarjeta del nodo ──
+    // ── Tarjeta del módulo ──
     const node = document.createElement('div');
     node.className = 'mk-node';
     node.innerHTML = `
-      <div class="mk-node-accent"></div>
-      <div class="mk-node-body">
-        <div class="mk-node-num">módulo ${String(i+1).padStart(2,'0')}</div>
-        <div class="mk-node-name">${nombre}</div>
-      </div>`;
-    node.style.left = p.x + 'vw';
-    node.style.top  = p.y + 'vh';
+      <div class="mk-node-num">⚡ ${String(i+1).padStart(2,'0')}</div>
+      <div class="mk-node-name">${nombre}</div>`;
+    node.style.left = nx + 'px';
+    node.style.top  = ny + 'px';
     document.body.appendChild(node);
   });
 
@@ -2527,8 +2494,6 @@ function mostrarMockup(desc) {
   setTimeout(() => {
     void centerBlock.offsetWidth;
     centerBlock.classList.add('mk-in');
-    void descCard.offsetWidth;
-    descCard.classList.add('mk-in');
   }, 400);
 
   document.querySelectorAll('.mk-node').forEach((node, i) => {
