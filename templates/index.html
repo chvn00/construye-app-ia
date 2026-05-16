@@ -951,14 +951,6 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   text-shadow: 0 1px 8px rgba(0,0,0,.4);
 }
 
-/* ── Equipo abajo centrado ── */
-#mk-equipo-label {
-  position: fixed; bottom: clamp(48px,8vh,70px); left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(.7rem, 1.5vw, .88rem); font-weight: 900;
-  color: rgba(255,255,255,.3); letter-spacing: 2.5px; text-transform: uppercase;
-  z-index: 6; pointer-events: none;
-}
 
 /* ── Contador ── */
 #mockup-countdown {
@@ -1387,8 +1379,6 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 
   <!-- Nodos de módulos (generados por JS, position:fixed) -->
 
-  <!-- Equipo -->
-  <div id="mk-equipo-label"></div>
 
   <!-- Contador -->
   <div id="mockup-countdown">Generando…</div>
@@ -2460,7 +2450,6 @@ let _mkCanvasStop = null;
 function mostrarMockup(desc) {
   // Contenido
   document.getElementById('mk-app-name').textContent     = state.appNombre;
-  document.getElementById('mk-equipo-label').textContent = state.equipo;
 
   // Limpiar nodos y resetear animaciones fiablemente (funciona en la 2ª+ vez)
   document.querySelectorAll('.mk-node').forEach(n => n.remove());
