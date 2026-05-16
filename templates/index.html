@@ -132,10 +132,50 @@ body::after {
   .res-panel h3 { font-size: .85rem; }
   .res-panel p  { font-size: .88rem; }
 
+  /* ── Registro: input y fuentes más pequeños ── */
+  #v-registro h2 { font-size: 1.3rem; }
+  #inp-equipo { font-size: 1rem !important; padding: 12px 16px !important; }
+
+  /* ── Módulos: título y subtítulo ── */
+  .mod-title { font-size: 1rem !important; letter-spacing: 0; }
+  .mod-subtitle { font-size: .75rem; }
+  #guide-text { font-size: .78rem; }
+  /* Contador de módulos seleccionados: visible dentro de la vista */
+  #mod-contador { font-size: .75rem; padding: 3px 10px; }
+  /* Módulos seleccionados que se salen: limitar altura de columnas */
+  #modulos-columns { max-height: none; }
+  .col-cards { max-height: none; }
+
+  /* ── Propuesta: reloj no tape el botón ── */
+  #timer-wrap {
+    position: static !important;
+    transform: none !important;
+    order: 10;
+    margin-top: 8px;
+  }
+  #timer-wrap svg { width: 64px !important; height: 64px !important; }
+  #timer-svg-wrap { width: 64px !important; height: 64px !important; }
+  #timer-text { font-size: 1rem !important; }
+
+  /* ── Resultado: categoría y posición no se encimen ── */
+  .res-header { padding: 10px 12px; }
+  .res-header-left { width: 100%; }
+  #pos-badge {
+    position: static !important;
+    display: inline-block;
+    align-self: flex-end;
+    font-size: .72rem;
+    padding: 3px 10px;
+    margin-top: 2px;
+  }
+  .res-header-left .res-cat-badge { font-size: .85rem; padding: 4px 14px; }
+  .res-header-left strong { font-size: 1rem; }
+  .res-header-left span   { font-size: .88rem; }
+
   /* ── Ranking ── */
   #v-ranking { gap: 10px; padding-top: 10px; }
   .rank-card { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
-  .rank-mods { display: none; } /* ocultar chips de módulos en móvil */
+  .rank-mods { display: none; }
 }
 
 @keyframes fadeUp {
