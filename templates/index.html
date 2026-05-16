@@ -831,7 +831,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   position: fixed; inset: 0; z-index: 1; pointer-events: none;
 }
 
-/* ── Nombre de la app — elemento estrella ── */
+/* ── Centro: cerebro + nombre app ── */
 #mk-center-block {
   position: fixed; left: 50%; top: 42%;
   transform: translate(-50%, -50%);
@@ -845,15 +845,28 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   from { opacity:0; transform:translate(-50%,-50%) scale(.4); }
   to   { opacity:1; transform:translate(-50%,-50%) scale(1);  }
 }
+/* Cerebro detrás del nombre */
+#mk-brain-img {
+  width: clamp(200px, 28vw, 380px);
+  display: block; margin: 0 auto;
+  opacity: .85;
+  filter: drop-shadow(0 0 30px rgba(34,150,255,.7)) drop-shadow(0 0 60px rgba(34,150,255,.4));
+  animation: brainPulse 3s ease-in-out infinite;
+}
+@keyframes brainPulse {
+  0%,100% { filter: drop-shadow(0 0 28px rgba(34,150,255,.7)) drop-shadow(0 0 55px rgba(34,150,255,.35)); }
+  50%     { filter: drop-shadow(0 0 45px rgba(100,180,255,.9)) drop-shadow(0 0 80px rgba(34,150,255,.55)); }
+}
+/* Nombre sobre el cerebro */
 #mk-app-name {
-  font-size: clamp(2.8rem, 9vw, 6rem); font-weight: 900; line-height: .95;
-  letter-spacing: -3px;
+  font-size: clamp(2.2rem, 7vw, 5rem); font-weight: 900; line-height: 1;
+  letter-spacing: -2px; margin-top: -20px; /* se monta sobre el cerebro */
   background: linear-gradient(140deg, #ffffff 0%, #c084fc 40%, #22d3ee 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 40px rgba(192,132,252,.8));
+  filter: drop-shadow(0 0 20px rgba(192,132,252,.9));
 }
 #mk-categoria {
-  display: inline-block; margin-top: 14px;
+  display: inline-block; margin-top: 10px;
   font-size: clamp(.78rem, 1.8vw, 1rem); font-weight: 700;
   letter-spacing: 2px; text-transform: uppercase;
   background: rgba(34,211,238,.1); border: 1px solid rgba(34,211,238,.5);
@@ -881,18 +894,15 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 .mk-cable:nth-child(4n+0) { animation-duration: .30s; }
 @keyframes electricFlow { to { stroke-dashoffset: -23; } }
 
-/* ── Tarjetas de módulos — diseño juvenil/pop ── */
+/* ── Tarjetas de módulos — diseño juvenil/pop por grupo ── */
 .mk-node {
   position: fixed; z-index: 6;
   width: clamp(155px, 19vw, 230px);
-  background: linear-gradient(135deg, #3b0764 0%, #6d28d9 45%, #0e7490 100%);
   border-radius: 22px;
   padding: 14px 18px 15px;
-  box-shadow: 0 10px 40px rgba(109,40,217,.55),
-              0 0 0 1.5px rgba(255,255,255,.15),
-              0 0 35px rgba(34,211,238,.18);
   transform: translate(-50%, -50%) scale(0);
   opacity: 0; text-align: center;
+  box-shadow: 0 0 0 1.5px rgba(255,255,255,.15);
 }
 .mk-node.mk-in {
   animation: mkNodeIn .65s cubic-bezier(.34,1.56,.64,1) forwards;
@@ -901,11 +911,29 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   from { opacity:0; transform:translate(-50%,-50%) scale(.1) rotate(-12deg); }
   to   { opacity:1; transform:translate(-50%,-50%) scale(1)  rotate(0deg);   }
 }
+/* Piensa — morado (el que estaba) */
+.mk-node.mk-piensa {
+  background: linear-gradient(135deg, #3b0764 0%, #6d28d9 45%, #4f46e5 100%);
+  box-shadow: 0 10px 40px rgba(109,40,217,.6), 0 0 35px rgba(139,92,246,.2),
+              0 0 0 1.5px rgba(255,255,255,.15);
+}
+/* Sensores — cyan/azul eléctrico */
+.mk-node.mk-sensores {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0284c7 45%, #22d3ee 100%);
+  box-shadow: 0 10px 40px rgba(2,132,199,.6), 0 0 35px rgba(34,211,238,.25),
+              0 0 0 1.5px rgba(255,255,255,.15);
+}
+/* Actúa — naranja/fuego */
+.mk-node.mk-actua {
+  background: linear-gradient(135deg, #7c2d12 0%, #ea580c 45%, #fbbf24 100%);
+  box-shadow: 0 10px 40px rgba(234,88,12,.6), 0 0 35px rgba(251,191,36,.2),
+              0 0 0 1.5px rgba(255,255,255,.15);
+}
 .mk-node-num {
   display: inline-block;
   font-size: .58rem; font-weight: 900; letter-spacing: 2px;
-  text-transform: uppercase; color: rgba(255,255,255,.6);
-  background: rgba(255,255,255,.12); border-radius: 50px;
+  text-transform: uppercase; color: rgba(255,255,255,.65);
+  background: rgba(255,255,255,.14); border-radius: 50px;
   padding: 2px 10px; margin-bottom: 8px;
 }
 .mk-node-name {
@@ -1328,8 +1356,9 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- Etiqueta -->
   <div class="mockup-label">📸 Generando app...</div>
 
-  <!-- Nombre de la app + categoría -->
+  <!-- Centro: cerebro + nombre app -->
   <div id="mk-center-block">
+    <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
     <div id="mk-app-name">AppName</div>
     <span id="mk-categoria">Categoría</span>
   </div>
@@ -2479,9 +2508,19 @@ function mostrarMockup(desc) {
     dot.appendChild(motion);
     cableSvg.appendChild(dot);
 
-    // ── Tarjeta del módulo ──
+    // ── Tarjeta del módulo (color según grupo) ──
+    const mod   = state.modulosDisponibles?.find(m => (m.nombre || m) === nombre);
+    const grupo = mod?.grupo || 'piensa';
+    const colorClass = grupo === 'sensores' ? 'mk-sensores'
+                     : grupo === 'actua'    ? 'mk-actua'
+                     :                       'mk-piensa';
+    const dotColor = grupo === 'sensores' ? '#22d3ee'
+                   : grupo === 'actua'    ? '#fbbf24'
+                   :                       '#e879f9';
+    dot.setAttribute('fill', dotColor);   // color del punto viajero = mismo grupo
+
     const node = document.createElement('div');
-    node.className = 'mk-node';
+    node.className = `mk-node ${colorClass}`;
     node.innerHTML = `
       <div class="mk-node-num">⚡ ${String(i+1).padStart(2,'0')}</div>
       <div class="mk-node-name">${nombre}</div>`;
