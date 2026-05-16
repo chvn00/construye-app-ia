@@ -2050,6 +2050,7 @@ async function enviarPropuesta() {
     msgEl.textContent = EVAL_MSGS[mi];
   }, 2200);
 
+  const evalStart = Date.now();
   try {
     const res = await fetch('/api/evaluar', {
       method: 'POST',
@@ -2062,8 +2063,12 @@ async function enviarPropuesta() {
         descripcion: desc,
       }),
     });
-    clearInterval(msgInt);
     const data = await res.json();
+    // Esperar mínimo 4 segundos para que se disfrute la pantalla de evaluando
+    const elapsed = Date.now() - evalStart;
+    const remaining = Math.max(0, 4000 - elapsed);
+    await new Promise(r => setTimeout(r, remaining));
+    clearInterval(msgInt);
     mostrarResultado(data);
   } catch {
     clearInterval(msgInt);
