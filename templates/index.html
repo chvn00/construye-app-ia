@@ -45,6 +45,24 @@ body::after {
   z-index: 1; animation: fadeUp .4s cubic-bezier(.4,0,.2,1); }
 .vista.activa { display: flex; }
 
+/* Móvil: vistas con mucho contenido hacen scroll */
+@media (max-width: 768px) {
+  html, body { overflow: auto; }
+  .vista { position: relative; min-height: 100dvh; padding: 20px 16px; }
+  #v-inicio, #v-registro, #v-categoria, #v-evaluando, #v-resultado {
+    position: fixed;
+  }
+  #v-modulos, #v-propuesta, #v-ranking {
+    position: relative; justify-content: flex-start; padding-top: 16px; padding-bottom: 40px;
+  }
+  #modulos-columns {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .col-cards { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+  .modulo-card { width: calc(50% - 6px); }
+}
+
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
