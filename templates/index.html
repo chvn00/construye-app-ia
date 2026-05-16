@@ -833,7 +833,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 
 /* ── Centro: cerebro + nombre app ── */
 #mk-center-block {
-  position: fixed; left: 50%; top: 42%;
+  position: fixed; left: 50%; top: 38%;
   transform: translate(-50%, -50%);
   text-align: center; z-index: 5; pointer-events: none;
   opacity: 0; transition: none;
@@ -857,10 +857,10 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   0%,100% { filter: drop-shadow(0 0 28px rgba(34,150,255,.7)) drop-shadow(0 0 55px rgba(34,150,255,.35)); }
   50%     { filter: drop-shadow(0 0 45px rgba(100,180,255,.9)) drop-shadow(0 0 80px rgba(34,150,255,.55)); }
 }
-/* Nombre arriba del cerebro */
+/* Nombre debajo del cerebro con 1 cm de separación */
 #mk-app-name {
   font-size: clamp(2.2rem, 7vw, 5rem); font-weight: 900; line-height: 1;
-  letter-spacing: -2px; margin-bottom: 10px;
+  letter-spacing: -2px; margin-top: 1cm;
   background: linear-gradient(140deg, #ffffff 0%, #c084fc 40%, #22d3ee 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
   filter: drop-shadow(0 0 20px rgba(192,132,252,.9));
@@ -1356,11 +1356,11 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- Etiqueta -->
   <div class="mockup-label">📸 Generando app...</div>
 
-  <!-- Centro: nombre arriba, cerebro abajo -->
+  <!-- Centro: cerebro arriba, nombre debajo -->
   <div id="mk-center-block">
+    <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
     <div id="mk-app-name">AppName</div>
     <span id="mk-categoria">Categoría</span>
-    <img id="mk-brain-img" src="/static/cerebro1.png" alt="cerebro IA">
   </div>
 
   <!-- Cables eléctricos SVG (generados por JS) -->
@@ -2473,7 +2473,7 @@ function mostrarMockup(desc) {
 
   // Posiciones en círculo equidistante alrededor del centro
   const W  = window.innerWidth,  H  = window.innerHeight;
-  const cx = W * .5,             cy = H * .42;
+  const cx = W * .5,             cy = H * .38;   // alineado con top:38% del bloque central
   const rx = W * .30,            ry = H * .30;   // radio elipse (más ancha que alta)
   const n  = state.modulosSeleccionados.length;
 
@@ -2481,7 +2481,9 @@ function mostrarMockup(desc) {
     // Ángulo: empezamos desde arriba (-π/2) y giramos equidistante
     const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
     const nx = cx + rx * Math.cos(angle);
-    const ny = cy + ry * Math.sin(angle);
+    // Módulo en zona inferior (6 del reloj, sin > 0.7): bajar extra ~55px
+    const extraY = Math.sin(angle) > 0.7 ? 55 : 0;
+    const ny = cy + ry * Math.sin(angle) + extraY;
 
     // ── Cable: línea glow + corriente animada ──
     const ns = 'http://www.w3.org/2000/svg';
