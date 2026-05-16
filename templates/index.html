@@ -857,26 +857,29 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   50%     { filter: drop-shadow(0 0 45px rgba(100,180,255,.9)) drop-shadow(0 0 80px rgba(34,150,255,.55)); }
 }
 
-/* ── Nombre de la app — flota arriba independiente ── */
+/* ── Nombre de la app — superpuesto sobre el cerebro ── */
 #mk-app-name-block {
-  position: fixed; left: 50%; top: 12%;
-  transform: translateX(-50%);
-  text-align: center; z-index: 5; pointer-events: none;
+  position: fixed; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center; z-index: 7; pointer-events: none;
   opacity: 0; transition: none;
+  width: clamp(180px, 26vw, 360px); /* mismo ancho que el cerebro */
 }
 #mk-app-name-block.mk-in {
-  animation: mkNameIn .8s cubic-bezier(.34,1.56,.64,1) forwards;
+  animation: mkNameIn .7s cubic-bezier(.34,1.56,.64,1) .2s forwards;
 }
 @keyframes mkNameIn {
-  from { opacity:0; transform:translateX(-50%) translateY(-20px); }
-  to   { opacity:1; transform:translateX(-50%) translateY(0);     }
+  from { opacity:0; transform:translate(-50%,-50%) scale(.7); }
+  to   { opacity:1; transform:translate(-50%,-50%) scale(1);  }
 }
 #mk-app-name {
-  font-size: clamp(2.4rem, 7.5vw, 5.5rem); font-weight: 900; line-height: 1;
-  letter-spacing: -2px;
-  background: linear-gradient(140deg, #ffffff 0%, #c084fc 40%, #22d3ee 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-  filter: drop-shadow(0 0 22px rgba(192,132,252,.9));
+  font-size: clamp(1.3rem, 3.8vw, 2.8rem); font-weight: 900; line-height: 1.1;
+  letter-spacing: -1px; word-break: break-word;
+  color: #fff;
+  text-shadow:
+    0 0 20px rgba(192,132,252,1),
+    0 0 40px rgba(124,58,237,.9),
+    0 2px 12px rgba(0,0,0,.95);
 }
 
 /* ── Cables eléctricos entre módulos y centro ── */
