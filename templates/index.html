@@ -45,22 +45,77 @@ body::after {
   z-index: 1; animation: fadeUp .4s cubic-bezier(.4,0,.2,1); }
 .vista.activa { display: flex; }
 
-/* Móvil: vistas con mucho contenido hacen scroll */
+/* ══════════════ MÓVIL ══════════════ */
 @media (max-width: 768px) {
   html, body { overflow: auto; }
-  .vista { position: relative; min-height: 100dvh; padding: 20px 16px; }
-  #v-inicio, #v-registro, #v-categoria, #v-evaluando, #v-resultado {
-    position: fixed;
+
+  /* Páginas estáticas: siguen fijas */
+  #v-inicio, #v-categoria, #v-evaluando { position: fixed; }
+
+  /* Páginas con mucho contenido: scroll vertical */
+  .vista {
+    position: relative; min-height: 100dvh;
+    padding: 16px 14px 60px; justify-content: flex-start;
   }
-  #v-modulos, #v-propuesta, #v-ranking {
-    position: relative; justify-content: flex-start; padding-top: 16px; padding-bottom: 40px;
+
+  /* ── Logos: mucho más pequeños en móvil ── */
+  .vista img[src*="escudo5"],
+  .vista img[src*="Recurso%203"] {
+    height: 55px !important;
   }
-  #modulos-columns {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  /* Contenedor del aro dorado también achica */
+  .vista > div > div[style*="width:150px"],
+  .vista > div > div[style*="width:168px"] {
+    width: 55px !important; height: 55px !important;
   }
+
+  /* ── Inicio: centrar verticalmente igual ── */
+  #v-inicio { justify-content: center; padding: 0 14px; }
+  #v-inicio img[src*="escudo5"] { height: 70px !important; }
+  #v-inicio img[src*="Recurso%203"] { height: 70px !important; }
+
+  /* ── Registro ── */
+  #v-registro { justify-content: center; }
+  #v-registro img[src*="escudo5"],
+  #v-registro img[src*="Recurso%203"] { height: 60px !important; }
+
+  /* ── Módulos ── */
+  #v-modulos { padding-top: 12px; gap: 8px; }
+  #modulos-columns { grid-template-columns: 1fr; gap: 14px; }
   .col-cards { flex-direction: row; flex-wrap: wrap; justify-content: center; }
   .modulo-card { width: calc(50% - 6px); }
+  #v-modulos img[src*="escudo5"],
+  #v-modulos img[src*="Recurso%203"] { height: 40px !important; }
+
+  /* ── Propuesta ── */
+  #v-propuesta { padding-top: 12px; gap: 12px; }
+  #v-propuesta img[src*="escudo5"],
+  #v-propuesta img[src*="Recurso%203"] { height: 45px !important; }
+  .prop-fields { flex-direction: column; }
+
+  /* ── Resultado ── */
+  #v-resultado { gap: 10px; padding: 12px 12px 60px; justify-content: flex-start; }
+  #v-resultado img[src*="escudo5"],
+  #v-resultado img[src*="Recurso%203"] { height: 50px !important; }
+  .res-main { flex-direction: column; gap: 10px; }
+  .score-panel { min-width: unset; width: 100%; padding: 16px; }
+  .res-panels { width: 100%; }
+  #pos-badge { position: static; margin-top: 4px; }
+  .res-header-left strong { font-size: 1.2rem; }
+  .res-header-left span   { font-size: 1rem; }
+
+  /* ── Ranking ── */
+  #v-ranking { padding-top: 12px; gap: 10px; }
+  #v-ranking img[src*="escudo5"],
+  #v-ranking img[src*="Recurso%203"] { height: 45px !important; }
+  .rank-card { padding: 12px 14px; gap: 8px; flex-wrap: wrap; }
+
+  /* ── Telecom text más pequeño ── */
+  .telecom-row { font-size: clamp(1rem, 4vw, 1.4rem) !important; gap: 8px !important; }
+
+  /* ── Títulos ── */
+  h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); }
+  h2 { font-size: clamp(1.2rem, 4vw, 1.8rem); }
 }
 
 @keyframes fadeUp {
