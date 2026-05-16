@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · Construye tu App con IA</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --accent: #7c3aed; --bg: #0d0d1a;
+  --card: rgba(255,255,255,0.06); --card-border: rgba(255,255,255,0.12);
+  --text: #fff; --sub: rgba(255,255,255,0.55);
+  --danger: #FC5C65; --ok: #26de81;
+}
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh; padding: 40px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 28px;
+}
+h1 { font-size: 2rem; font-weight: 800; }
+h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; }
+.sub { color: var(--sub); font-size: .95rem; }
+
+.card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: 16px; padding: 28px 32px;
+  width: 100%; max-width: 700px;
+}
+
+.inp {
+  width: 100%; padding: 12px 16px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--card-border);
+  border-radius: 10px; color: #fff; font-size: 1rem;
+  font-family: inherit; outline: none;
+  transition: border-color .2s;
+}
+.inp:focus { border-color: var(--accent); }
+.inp::placeholder { color: rgba(255,255,255,.3); }
+
+.btn {
+  padding: 11px 24px; border: none; border-radius: 50px;
+  font-size: .95rem; font-weight: 700; cursor: pointer;
+  transition: opacity .15s, transform .15s;
+}
+.btn:hover { opacity: .85; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-danger  { background: var(--danger); color: #fff; }
+.btn-neutral { background: rgba(255,255,255,.1); color: #fff; border: 1px solid var(--card-border); }
+
+.row { display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-top: 14px; }
+
+.msg {
+  margin-top: 12px; padding: 10px 16px;
+  border-radius: 8px; font-size: .9rem; font-weight: 600;
+  display: none;
+}
+.msg.ok   { background: rgba(38,222,129,.15); border: 1px solid var(--ok);     color: var(--ok); }
+.msg.err  { background: rgba(252,92,101,.15); border: 1px solid var(--danger); color: var(--danger); }
+
+/* Ranking table */
+#ranking-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+#ranking-table th, #ranking-table td {
+  padding: 10px 14px; text-align: left;
+  border-bottom: 1px solid var(--card-border); font-size: .9rem;
+}
+#ranking-table th { color: var(--sub); font-weight: 700; font-size: .8rem; text-transform: uppercase; }
+.score-cell { font-weight: 800; }
+
+a { color: rgba(255,255,255,.6); font-size: .9rem; text-decoration: none; }
+a:hover { color: #fff; }
+</style>
+</head>
+<body>
+
+<div style="text-align:center">
+  <h1>⚙️ Panel Admin</h1>
+  <p class="sub">Construye tu App con IA · USTA</p>
+</div>
+
+<!-- Auth -->
+<div class="card" id="auth-section">
+  <h2>🔐 Autenticación</h2>
+  <input class="inp" id="pwd" type="password" placeholder="Contraseña de administrador" autocomplete="off">
+  <div class="row">
+    <button class="btn btn-primary" onclick="auth()">Ingresar</button>
+    <a href="/">← Volver al juego</a>
+  </div>
+  <div class="msg" id="auth-msg"></div>
+</div>
+
+<!-- Panel (hidden until auth) -->
+<div id="panel" style="display:none;width:100%;max-width:700px;display:none;flex-direction:column;gap:20px">
+
+  <!-- Actions -->
+  <div class="card">
+    <h2>🎮 Acciones</h2>
+    <div class="row">
+      <button class="btn btn-neutral" onclick="loadRanking()">🔄 Recargar ranking</button>
+      <button class="btn btn-danger"  onclick="resetRanking()">🗑️ Borrar ranking completo</button>
+    </div>
+    <div class="msg" id="action-msg"></div>
+  </div>
+
+  <!-- Ranking -->
+  <div class="card">
+    <h2>🏆 Ranking actual</h2>
+    <div id="ranking-wrap">
+      <p class="sub">Presiona "Recargar ranking" para ver los datos.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+let pwd = '';
+
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + type;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
+}
+
+function auth() {
+  pwd = document.getElementById('pwd').value;
+  if (!pwd) return;
+  // Test auth by calling a safe endpoint
+  fetch('/api/admin/reset-juego', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({password: pwd}),
+  }).then(r => {
+    if (r.ok) {
+      document.getElementById('auth-section').style.display = 'none';
+      const panel = document.getElementById('panel');
+      panel.style.display = 'flex';
+      loadRanking();
+    } else {
+      showMsg('auth-msg', 'Contraseña incorrecta', 'err');
+    }
+  }).catch(() => showMsg('auth-msg', 'Error de conexión con el servidor', 'err'));
+}
+
+document.getElementById('pwd').addEventListener('keydown', e => {
+  if (e.key === 'Enter') auth();
+});
+
+async function loadRanking() {
+  const wrap = document.getElementById('ranking-wrap');
+  wrap.innerHTML = '<p class="sub">Cargando...</p>';
+  try {
+    const res  = await fetch('/api/ranking');
+    const data = await res.json();
+    renderRanking(data.ranking);
+  } catch {
+    wrap.innerHTML = '<p style="color:#FC5C65">Error al cargar el ranking.</p>';
+  }
+}
+
+function renderRanking(ranking) {
+  const wrap = document.getElementById('ranking-wrap');
+  if (!ranking || ranking.length === 0) {
+    wrap.innerHTML = '<p class="sub">No hay equipos registrados aún.</p>';
+    return;
+  }
+  const medals = ['🥇','🥈','🥉'];
+  const rows = ranking.map((e, i) => {
+    const color = e.puntaje >= 80 ? '#26de81' : e.puntaje >= 60 ? '#F7B731' : '#FC5C65';
+    const mods  = (e.modulos || []).join(' → ');
+    return `<tr>
+      <td>${medals[i] || (i+1)}</td>
+      <td><strong>${e.equipo}</strong></td>
+      <td>${e.app_nombre}</td>
+      <td>${e.categoria}</td>
+      <td class="score-cell" style="color:${color}">${e.puntaje}</td>
+      <td style="color:var(--sub);font-size:.8rem">${e.fecha || ''}</td>
+      <td><button class="btn btn-danger" style="padding:5px 10px;font-size:.75rem"
+        onclick="eliminarEntrada(${i})">🗑️</button></td>
+    </tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <p class="sub" style="margin-bottom:8px">${ranking.length} equipo(s) registrado(s)</p>
+    <table id="ranking-table">
+      <thead><tr>
+        <th>#</th><th>Equipo</th><th>App</th><th>Categoría</th><th>Puntaje</th><th>Hora</th><th></th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+async function eliminarEntrada(idx) {
+  if (!confirm('¿Eliminar esta entrada del ranking?')) return;
+  try {
+    const res = await fetch('/api/admin/delete-entrada', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: pwd, idx}),
+    });
+    if (res.ok) {
+      showMsg('action-msg', '✅ Entrada eliminada', 'ok');
+      loadRanking();
+    } else {
+      showMsg('action-msg', '❌ Error al eliminar', 'err');
+    }
+  } catch {
+    showMsg('action-msg', '❌ Error de conexión', 'err');
+  }
+}
+
+async function resetRanking() {
+  if (!confirm('¿Seguro que quieres borrar todo el ranking? Esta acción no se puede deshacer.')) return;
+  try {
+    const res = await fetch('/api/admin/reset-ranking', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: pwd}),
+    });
+    if (res.ok) {
+      showMsg('action-msg', '✅ Ranking borrado correctamente', 'ok');
+      loadRanking();
+    } else {
+      showMsg('action-msg', '❌ Error al borrar el ranking', 'err');
+    }
+  } catch {
+    showMsg('action-msg', '❌ Error de conexión', 'err');
+  }
+}
+</script>
+</body>
+</html>
