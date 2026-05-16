@@ -791,13 +791,21 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 #bg-canvas { position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.85; }
 
 /* ══════════════ VISTA MOCKUP ══════════════ */
-#v-mockup { gap: 0; padding: 0; justify-content: center; }
+/* ── MOCKUP — pantalla constelación ─────────────────────────── */
+#v-mockup { position: relative; overflow: hidden; }
 
-/* Flash de cámara */
+/* Flash de cámara — disparo instantáneo con fade-out */
 #cam-flash {
   position: fixed; inset: 0; z-index: 999;
   background: #fff; opacity: 0; pointer-events: none;
-  transition: opacity .06s;
+}
+@keyframes camFlashAnim {
+  0%   { opacity: 1; }
+  15%  { opacity: .95; }
+  100% { opacity: 0; }
+}
+#cam-flash.flash-on {
+  animation: camFlashAnim .55s ease-out forwards;
 }
 
 /* Visor de cámara — esquinas */
@@ -826,105 +834,106 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   100% { top: 90%; opacity: 0; }
 }
 
-/* Tarjeta del mockup — tipo teléfono */
-.mockup-phone {
-  width: min(340px, 88vw);
-  background: #0a0a18;
-  border: 2px solid rgba(255,255,255,.15);
-  border-radius: 36px;
-  padding: 18px 16px 24px;
-  box-shadow: 0 0 0 6px rgba(255,255,255,.04),
-              0 0 60px rgba(124,58,237,.35),
-              0 20px 60px rgba(0,0,0,.6);
-  position: relative; z-index: 5;
-  animation: mockupPop .5s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes mockupPop {
-  from { opacity:0; transform: scale(.85) translateY(20px); }
-  to   { opacity:1; transform: scale(1) translateY(0); }
+/* SVG líneas de conexión */
+#mk-svg-lines {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 2;
 }
 
-/* Notch del teléfono */
-.mockup-notch {
-  width: 80px; height: 10px;
-  background: rgba(255,255,255,.12); border-radius: 50px;
-  margin: 0 auto 14px;
+/* Bloque central — nombre app + categoría */
+#mk-center-block {
+  position: absolute; left: 50%; top: 44%;
+  transform: translate(-50%, -50%);
+  text-align: center; z-index: 5;
+  pointer-events: none;
+}
+#mk-app-name {
+  font-size: clamp(2rem, 8vw, 4.2rem); font-weight: 900; line-height: 1.05;
+  letter-spacing: -1.5px;
+  background: linear-gradient(135deg, #fff 0%, #c084fc 55%, #22d3ee 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  filter: drop-shadow(0 0 28px rgba(192,132,252,.55));
+  animation: mkNamePop .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes mkNamePop {
+  from { opacity: 0; transform: scale(.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+#mk-categoria {
+  display: inline-block; margin-top: 10px;
+  font-size: clamp(.72rem, 2vw, .9rem); font-weight: 700;
+  letter-spacing: 1.2px; text-transform: uppercase;
+  background: rgba(192,132,252,.15);
+  border: 1px solid rgba(192,132,252,.5);
+  color: #c084fc; border-radius: 50px; padding: 5px 18px;
 }
 
-/* App header dentro del mockup */
-.mockup-app-header {
-  background: linear-gradient(135deg, var(--accent), #22d3ee);
-  border-radius: 18px 18px 0 0;
-  padding: 16px 14px 12px;
+/* Nodos de módulos */
+.mk-node {
+  position: absolute; z-index: 6;
+  background: rgba(10,5,30,.88);
+  border: 1.5px solid rgba(192,132,252,.45);
+  border-radius: 14px;
+  padding: clamp(6px,1.2vh,10px) clamp(10px,2vw,18px);
+  font-size: clamp(.62rem, 1.6vw, .82rem);
+  font-weight: 700; color: #dbb8ff;
   text-align: center;
+  box-shadow: 0 0 22px rgba(124,58,237,.35), inset 0 0 14px rgba(124,58,237,.1);
+  transform: translate(-50%, -50%);
+  max-width: clamp(110px, 22vw, 160px);
+  white-space: normal; word-break: break-word;
+  animation: mkNodeIn .5s cubic-bezier(.34,1.56,.64,1) both,
+             mkNodeFloat 3.5s ease-in-out infinite;
 }
-.mockup-app-name {
-  font-size: 1.4rem; font-weight: 900; color: #fff;
-  letter-spacing: -0.5px;
-  text-shadow: 0 2px 8px rgba(0,0,0,.3);
+@keyframes mkNodeIn {
+  from { opacity:0; transform: translate(-50%,-50%) scale(.6); }
+  to   { opacity:1; transform: translate(-50%,-50%) scale(1); }
 }
-.mockup-cat-tag {
-  display: inline-block; margin-top: 4px;
-  font-size: .72rem; font-weight: 700; color: rgba(255,255,255,.8);
-  background: rgba(255,255,255,.15); border-radius: 50px;
-  padding: 2px 10px; letter-spacing: .5px; text-transform: uppercase;
+@keyframes mkNodeFloat {
+  0%,100% { margin-top: 0; }
+  50%      { margin-top: -7px; }
 }
-/* App body */
-.mockup-app-body {
-  background: rgba(255,255,255,.04);
-  border-radius: 0 0 18px 18px;
-  padding: 10px 12px 12px;
+
+/* Punto central decorativo (nodo hub) */
+#mk-hub {
+  position: absolute; z-index: 4;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: radial-gradient(circle, #c084fc, #7c3aed);
+  box-shadow: 0 0 20px #c084fc, 0 0 40px rgba(192,132,252,.4);
+  transform: translate(-50%, -50%);
+  left: 50%; top: 44%;
+  animation: hubPulse 2s ease-in-out infinite;
 }
-.mockup-section-title {
-  font-size: .65rem; font-weight: 800; color: rgba(255,255,255,.4);
-  letter-spacing: 1.2px; text-transform: uppercase; margin: 8px 0 5px;
+@keyframes hubPulse {
+  0%,100% { box-shadow: 0 0 20px #c084fc, 0 0 40px rgba(192,132,252,.4); }
+  50%      { box-shadow: 0 0 32px #c084fc, 0 0 60px rgba(192,132,252,.6); }
 }
-.mockup-modules {
-  display: flex; flex-wrap: wrap; gap: 5px;
+
+/* Descripción + equipo al fondo */
+#mk-desc-area {
+  position: absolute; bottom: clamp(58px,10vh,90px); left: 50%;
+  transform: translateX(-50%);
+  width: min(520px, 82vw); text-align: center; z-index: 6;
+  pointer-events: none;
 }
-.mockup-mod-chip {
-  font-size: .7rem; padding: 3px 9px; border-radius: 50px; font-weight: 600;
-  background: color-mix(in srgb, var(--accent) 20%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  color: #c084fc;
-}
-.mockup-desc {
-  font-size: .78rem; color: rgba(255,255,255,.65); line-height: 1.5;
-  margin-top: 4px;
-  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+#mk-desc {
+  font-size: clamp(.72rem, 1.8vw, .9rem); color: rgba(255,255,255,.5);
+  line-height: 1.55;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
   overflow: hidden;
 }
-.mockup-team-row {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-top: 10px; padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,.08);
-  font-size: .72rem; color: rgba(255,255,255,.5);
+#mk-equipo {
+  display: inline-block; margin-top: 8px;
+  font-size: clamp(.65rem, 1.5vw, .8rem); font-weight: 800;
+  color: rgba(255,255,255,.3); letter-spacing: 1.5px; text-transform: uppercase;
 }
-.mockup-team-name { font-weight: 700; color: rgba(255,255,255,.8); }
 
-/* Barra inferior del mockup + contador */
-.mockup-bottom {
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  margin-top: 16px; position: relative; z-index: 5;
-}
-.mockup-shutter {
-  width: 52px; height: 52px; border-radius: 50%;
-  border: 3px solid rgba(255,255,255,.7);
-  display: flex; align-items: center; justify-content: center;
-  cursor: default;
-}
-.mockup-shutter-inner {
-  width: 38px; height: 38px; border-radius: 50%;
-  background: rgba(255,255,255,.9);
-  animation: shutterPulse 1.8s ease-in-out infinite;
-}
-@keyframes shutterPulse {
-  0%,100% { transform: scale(1); opacity: .9; }
-  50%      { transform: scale(.88); opacity: .6; }
-}
+/* Contador regresivo */
 #mockup-countdown {
-  font-size: .85rem; color: rgba(255,255,255,.5);
-  font-weight: 700; letter-spacing: .5px;
+  position: absolute; bottom: clamp(18px,4vh,32px); left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(.75rem, 1.8vw, .88rem); font-weight: 700;
+  letter-spacing: .5px; color: rgba(255,255,255,.45); z-index: 6;
 }
 
 /* Etiqueta "📸 CAPTURANDO" */
@@ -1317,32 +1326,28 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- Etiqueta capturando -->
   <div class="mockup-label">📸 Capturando propuesta...</div>
 
-  <!-- Tarjeta tipo teléfono -->
-  <div class="mockup-phone">
-    <div class="mockup-notch"></div>
-    <div class="mockup-app-header">
-      <div class="mockup-app-name" id="mk-app-name">AppName</div>
-      <span class="mockup-cat-tag" id="mk-categoria">Categoría</span>
-    </div>
-    <div class="mockup-app-body">
-      <div class="mockup-section-title">Módulos IA</div>
-      <div class="mockup-modules" id="mk-modules"></div>
-      <div class="mockup-section-title" style="margin-top:10px">Descripción</div>
-      <div class="mockup-desc" id="mk-desc"></div>
-      <div class="mockup-team-row">
-        <span>Equipo</span>
-        <span class="mockup-team-name" id="mk-equipo"></span>
-      </div>
-    </div>
+  <!-- Líneas SVG de conexión (generadas por JS) -->
+  <svg id="mk-svg-lines"></svg>
+
+  <!-- Nodo hub central -->
+  <div id="mk-hub"></div>
+
+  <!-- Nombre app + categoría centrados -->
+  <div id="mk-center-block">
+    <div id="mk-app-name">AppName</div>
+    <span id="mk-categoria">Categoría</span>
   </div>
 
-  <!-- Botón shutter + countdown -->
-  <div class="mockup-bottom">
-    <div class="mockup-shutter">
-      <div class="mockup-shutter-inner"></div>
-    </div>
-    <div id="mockup-countdown">Analizando en 10s...</div>
+  <!-- Nodos de módulos (generados por JS) -->
+
+  <!-- Descripción + equipo -->
+  <div id="mk-desc-area">
+    <div id="mk-desc"></div>
+    <div id="mk-equipo"></div>
   </div>
+
+  <!-- Contador regresivo -->
+  <div id="mockup-countdown">Analizando en 10s…</div>
 </div>
 
 <!-- ══════════════ VISTA 6: EVALUANDO ══════════════ -->
@@ -2406,21 +2411,60 @@ async function enviarPropuesta() {
 
 // ── MOCKUP ───────────────────────────────────────────────────
 function mostrarMockup(desc) {
-  document.getElementById('mk-app-name').textContent  = state.appNombre;
+  document.getElementById('mk-app-name').textContent = state.appNombre;
   document.getElementById('mk-categoria').textContent = state.categoria?.nombre || '';
-  document.getElementById('mk-desc').textContent      = desc;
-  document.getElementById('mk-equipo').textContent    = state.equipo;
+  document.getElementById('mk-desc').textContent = desc;
+  document.getElementById('mk-equipo').textContent = '— ' + state.equipo + ' —';
 
-  const modsEl = document.getElementById('mk-modules');
-  modsEl.innerHTML = '';
-  state.modulosSeleccionados.forEach(nombre => {
-    const chip = document.createElement('span');
-    chip.className   = 'mockup-mod-chip';
-    chip.textContent = nombre;
-    modsEl.appendChild(chip);
-  });
+  // Limpiar nodos anteriores
+  document.querySelectorAll('.mk-node').forEach(n => n.remove());
 
+  // Posiciones de los 6 nodos (% de pantalla) — distribución orbital
+  const nodePos = [
+    { x: 13, y: 20 },   // arriba-izq
+    { x: 78, y: 16 },   // arriba-der
+    { x:  7, y: 50 },   // medio-izq
+    { x: 87, y: 52 },   // medio-der
+    { x: 16, y: 78 },   // abajo-izq
+    { x: 76, y: 80 },   // abajo-der
+  ];
+  const cx = 50, cy = 44; // % — centro (donde está el nombre)
+
+  // Necesitamos dimensiones reales para el SVG
   showView('mockup');
+  requestAnimationFrame(() => {
+    const el = document.getElementById('v-mockup');
+    const W  = el.offsetWidth  || window.innerWidth;
+    const H  = el.offsetHeight || window.innerHeight;
+    const svg = document.getElementById('mk-svg-lines');
+    svg.innerHTML = '';
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+    state.modulosSeleccionados.forEach((nombre, i) => {
+      if (i >= nodePos.length) return;
+      const p = nodePos[i];
+
+      // Línea SVG al centro
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', p.x / 100 * W);
+      line.setAttribute('y1', p.y / 100 * H);
+      line.setAttribute('x2', cx / 100 * W);
+      line.setAttribute('y2', cy / 100 * H);
+      line.setAttribute('stroke', 'rgba(192,132,252,0.22)');
+      line.setAttribute('stroke-width', '1.5');
+      line.setAttribute('stroke-dasharray', '6 5');
+      svg.appendChild(line);
+
+      // Nodo
+      const node = document.createElement('div');
+      node.className = 'mk-node';
+      node.textContent = nombre;
+      node.style.left = p.x + '%';
+      node.style.top  = p.y + '%';
+      node.style.animationDelay = `0s, ${-i * 0.6}s`;
+      el.appendChild(node);
+    });
+  });
 }
 
 async function fetchEvaluacion(desc) {
@@ -2445,8 +2489,9 @@ function esperarMockup() {
     let seconds   = 10;
 
     function flash() {
-      flashEl.style.opacity = '1';
-      setTimeout(() => { flashEl.style.opacity = '0'; }, 180);
+      flashEl.classList.remove('flash-on');
+      void flashEl.offsetWidth; // forzar reflow para reiniciar animación
+      flashEl.classList.add('flash-on');
     }
 
     // Disparos de cámara: inmediato, 3 s, 6 s, 9 s
