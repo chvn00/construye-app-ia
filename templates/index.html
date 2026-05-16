@@ -51,73 +51,91 @@ body::after {
 @media (max-width: 768px) {
   html, body { overflow: auto; }
 
-  /* Páginas estáticas: siguen fijas */
-  #v-inicio, #v-categoria, #v-evaluando { position: fixed; }
+  /* Páginas fijas (poco contenido) */
+  #v-inicio, #v-categoria, #v-evaluando { position: fixed; overflow: hidden; }
 
-  /* Páginas con mucho contenido: scroll vertical */
-  .vista {
+  /* Páginas con scroll */
+  #v-registro, #v-modulos, #v-propuesta, #v-resultado, #v-ranking {
     position: relative; min-height: 100dvh;
-    padding: 16px 14px 60px; justify-content: flex-start;
+    padding: 16px 12px 60px; justify-content: flex-start;
   }
 
-  /* ── Logos: mucho más pequeños en móvil ── */
-  .vista img[src*="escudo5"],
-  .vista img[src*="Recurso%203"] {
-    height: 55px !important;
-  }
-  /* Contenedor del aro dorado también achica */
-  .vista > div > div[style*="width:150px"],
-  .vista > div > div[style*="width:168px"] {
-    width: 55px !important; height: 55px !important;
-  }
+  /* ── Títulos y texto ── */
+  h1 { font-size: clamp(1.5rem, 6vw, 2.2rem); }
+  h2 { font-size: clamp(1.1rem, 4vw, 1.6rem); }
+  .telecom-row { font-size: clamp(.85rem, 3.5vw, 1.1rem) !important; gap: 6px !important; }
+  .side-icon { font-size: 1em !important; }
 
-  /* ── Inicio: centrar verticalmente igual ── */
+  /* ── Logos globales ── */
+  img[src*="escudo5"]    { height: 44px !important; width: auto !important; }
+  img[src*="Recurso%203"]{ height: 44px !important; width: auto !important; }
+
+  /* ── Inicio ── */
   #v-inicio { justify-content: center; padding: 0 14px; }
-  #v-inicio img[src*="escudo5"] { height: 70px !important; }
-  #v-inicio img[src*="Recurso%203"] { height: 70px !important; }
+  #v-inicio img[src*="escudo5"]     { height: 60px !important; }
+  #v-inicio img[src*="Recurso%203"] { height: 60px !important; }
+  /* Aro dorado en inicio: achica el contenedor */
+  #v-inicio div[style*="width:168px"] {
+    width: 60px !important; height: 60px !important;
+  }
 
   /* ── Registro ── */
   #v-registro { justify-content: center; }
-  #v-registro img[src*="escudo5"],
-  #v-registro img[src*="Recurso%203"] { height: 60px !important; }
 
   /* ── Módulos ── */
-  #v-modulos { padding-top: 12px; gap: 8px; }
-  #modulos-columns { grid-template-columns: 1fr; gap: 14px; }
-  .col-cards { flex-direction: row; flex-wrap: wrap; justify-content: center; }
-  .modulo-card { width: calc(50% - 6px); }
-  #v-modulos img[src*="escudo5"],
-  #v-modulos img[src*="Recurso%203"] { height: 40px !important; }
+  #v-modulos { gap: 8px; padding-top: 10px; }
+  #modulos-columns { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .col-header { font-size: .78rem; padding: 8px 10px; }
+  .col-cards { flex-direction: column; }
+  .modulo-card {
+    padding: 8px 6px; font-size: .78rem;
+    min-height: 56px;
+  }
+  .mod-emoji { font-size: 1.2rem; }
+  .mod-nombre { font-size: .72rem; }
 
-  /* ── Propuesta ── */
-  #v-propuesta { padding-top: 12px; gap: 12px; }
-  #v-propuesta img[src*="escudo5"],
-  #v-propuesta img[src*="Recurso%203"] { height: 45px !important; }
+  /* ── Propuesta (nombre de app) ── */
+  #v-propuesta { gap: 10px; padding-top: 10px; }
   .prop-fields { flex-direction: column; }
+  #prop-flow {
+    flex-wrap: wrap !important; overflow-x: hidden !important;
+    gap: 6px !important; padding: 8px !important;
+    justify-content: center !important;
+  }
+  .prop-chip { font-size: .75rem; padding: 4px 10px; }
+  .wire-seg, .wire-dot { display: none; }
+
+  /* ── Evaluando ── */
+  #v-evaluando { gap: 14px; }
+  #v-evaluando img[src*="escudo5"]     { height: 70px !important; width: 70px !important; }
+  #v-evaluando img[src*="Recurso%203"] { height: 70px !important; }
+  /* Contenedor del aro en evaluando */
+  #v-evaluando div[style*="width:268px"] {
+    width: 70px !important; height: 70px !important;
+  }
+  #v-evaluando div[style*="width:240px"] {
+    width: 70px !important; height: 70px !important;
+  }
+  .ia-eval-word { font-size: clamp(3rem, 15vw, 5rem) !important; }
+  .eval-title-text { font-size: clamp(1.2rem, 5vw, 1.8rem) !important; }
 
   /* ── Resultado ── */
-  #v-resultado { gap: 10px; padding: 12px 12px 60px; justify-content: flex-start; }
-  #v-resultado img[src*="escudo5"],
-  #v-resultado img[src*="Recurso%203"] { height: 50px !important; }
-  .res-main { flex-direction: column; gap: 10px; }
-  .score-panel { min-width: unset; width: 100%; padding: 16px; }
-  .res-panels { width: 100%; }
-  #pos-badge { position: static; margin-top: 4px; }
-  .res-header-left strong { font-size: 1.2rem; }
-  .res-header-left span   { font-size: 1rem; }
+  #v-resultado { gap: 8px; }
+  .res-header { padding: 12px 14px 10px; }
+  .res-header-left strong { font-size: 1.1rem; }
+  .res-header-left span   { font-size: .95rem; }
+  #pos-badge { position: static; font-size: .75rem; padding: 4px 12px; margin-top: 4px; }
+  .res-main { flex-direction: column; gap: 8px; }
+  .score-panel { min-width: unset; width: 100%; padding: 14px 16px; }
+  .res-panels { width: 100%; gap: 8px; }
+  .res-panel { padding: 12px 14px; }
+  .res-panel h3 { font-size: .85rem; }
+  .res-panel p  { font-size: .88rem; }
 
   /* ── Ranking ── */
-  #v-ranking { padding-top: 12px; gap: 10px; }
-  #v-ranking img[src*="escudo5"],
-  #v-ranking img[src*="Recurso%203"] { height: 45px !important; }
-  .rank-card { padding: 12px 14px; gap: 8px; flex-wrap: wrap; }
-
-  /* ── Telecom text más pequeño ── */
-  .telecom-row { font-size: clamp(1rem, 4vw, 1.4rem) !important; gap: 8px !important; }
-
-  /* ── Títulos ── */
-  h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); }
-  h2 { font-size: clamp(1.2rem, 4vw, 1.8rem); }
+  #v-ranking { gap: 10px; padding-top: 10px; }
+  .rank-card { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
+  .rank-mods { display: none; } /* ocultar chips de módulos en móvil */
 }
 
 @keyframes fadeUp {
@@ -1688,9 +1706,12 @@ function renderGrid() {
         const div    = document.createElement('div');
         div.className = 'modulo-card' + (sel ? ' selected' : '');
         div.onclick      = () => toggleModulo(nombre, div);
-        div.onmouseenter = (e) => showModTip(e, nombre);
-        div.onmousemove  = (e) => moveModTip(e);
-        div.onmouseleave = hideModTip;
+        // Tooltips solo en desktop (no táctil)
+        if (!('ontouchstart' in window)) {
+          div.onmouseenter = (e) => showModTip(e, nombre);
+          div.onmousemove  = (e) => moveModTip(e);
+          div.onmouseleave = hideModTip;
+        }
         div.innerHTML = `<span class="mod-emoji">${emoji}</span>
           <span class="mod-nombre">${nombre}</span>
           ${sel ? `<span class="mod-num">${pos+1}</span>` : ''}`;
