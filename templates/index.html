@@ -792,7 +792,8 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 
 /* ══════════════ VISTA MOCKUP ══════════════ */
 /* ══════════════ MOCKUP — Cerebro + Constelación ══════════════ */
-#v-mockup { position: relative; overflow: hidden; background: #04010f; }
+/* NO sobreescribir position:fixed de .vista — solo agregamos fondo y overflow */
+#v-mockup { overflow: hidden; background: #04010f; }
 
 /* Flash de cámara — disparo instantáneo con fade-out */
 #cam-flash {
