@@ -92,8 +92,9 @@ body::after {
   #v-modulos img[src*="Recurso%203"] { height: 82px !important; }
   #v-modulos .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
   #v-modulos { gap: 8px; padding-top: 10px; }
-  #modulos-columns { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .col-header { font-size: .78rem; padding: 8px 10px; }
+  .mod-subtitle { display: none !important; }
+  #modulos-columns { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .col-header { font-size: .7rem; padding: 6px 4px; white-space: nowrap; gap: 3px !important; }
   .col-cards { flex-direction: column; }
   .modulo-card {
     padding: 8px 6px; font-size: .78rem;
@@ -101,6 +102,12 @@ body::after {
   }
   .mod-emoji { font-size: 1.2rem; }
   .mod-nombre { font-size: .72rem; }
+  #flow-preview {
+    flex-wrap: wrap !important;
+    min-height: auto !important;
+    row-gap: 4px !important;
+    justify-content: center !important;
+  }
 
   /* ── Propuesta (nombre de app) ── */
   #v-propuesta { gap: 10px; padding-top: 10px; }
