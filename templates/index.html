@@ -2448,13 +2448,12 @@ async function enviarPropuesta() {
 let _mkCanvasStop = null;
 
 function mostrarMockup(desc) {
-  // Contenido
-  document.getElementById('mk-app-name').textContent     = state.appNombre;
+  document.getElementById('mk-app-name').textContent = state.appNombre;
 
-  // Limpiar nodos y resetear animaciones fiablemente (funciona en la 2ª+ vez)
+  // Limpiar nodos y resetear animaciones
   document.querySelectorAll('.mk-node').forEach(n => n.remove());
-  const centerBlock  = document.getElementById('mk-center-block');
-  const nameBlock    = document.getElementById('mk-app-name-block');
+  const centerBlock = document.getElementById('mk-center-block');
+  const nameBlock   = document.getElementById('mk-app-name-block');
   [centerBlock, nameBlock].forEach(el => {
     el.classList.remove('mk-in');
     el.style.animation = 'none';
@@ -2462,108 +2461,116 @@ function mostrarMockup(desc) {
   });
 
   showView('mockup');
+  window.scrollTo(0, 0);
 
-  // Parar canvas anterior y arrancar nuevo
-  if (_mkCanvasStop) { _mkCanvasStop(); _mkCanvasStop = null; }
-  // Usar visualViewport para coincidir exactamente con top:50%/left:50% de CSS en iOS Safari
-  const W = (window.visualViewport?.width  ?? window.innerWidth);
-  const H = (window.visualViewport?.height ?? window.innerHeight);
-  const canvas = document.getElementById('mk-canvas');
-  canvas.width  = W;
-  canvas.height = H;
-  _mkCanvasStop = startBrainCanvas(canvas);
+  // Esperar un frame para que el navegador haga layout y podamos medir
+  // dónde renderiza realmente el bloque del cerebro (top:50% en iOS Safari
+  // puede diferir de window.innerHeight/2)
+  requestAnimationFrame(() => {
+    const rect = centerBlock.getBoundingClientRect();
+    const cx   = rect.left + rect.width  / 2;   // centro X real del cerebro
+    const cy   = rect.top  + rect.height / 2;   // centro Y real del cerebro
+    const W    = window.innerWidth;
+    const H    = window.innerHeight;
 
-  // Limpiar cables SVG anteriores (preservar defs)
-  const cableSvg = document.getElementById('mk-cables-svg');
-  Array.from(cableSvg.children).forEach(c => { if (c.tagName !== 'defs') c.remove(); });
-  const cx = W * .5,             cy = H * .50;   // cerebro en el centro exacto
-  const isMob = W < 600;
-  const rx = isMob ? W * .36 : W * .30;         // radio elipse (más amplio en móvil)
-  const ry = isMob ? H * .27 : H * .30;
-  const n  = state.modulosSeleccionados.length;
+    // Parar canvas anterior y arrancar nuevo centrado en el mismo punto
+    if (_mkCanvasStop) { _mkCanvasStop(); _mkCanvasStop = null; }
+    const canvas = document.getElementById('mk-canvas');
+    canvas.width  = W;
+    canvas.height = H;
+    _mkCanvasStop = startBrainCanvas(canvas, cx, cy);
 
-  state.modulosSeleccionados.forEach((nombre, i) => {
-    // Ángulo: empezamos desde arriba (-π/2) y giramos equidistante
-    const angle = -Math.PI / 2 + (2 * Math.PI * i) / n;
-    const nx = cx + rx * Math.cos(angle);
-    // Módulo en zona inferior (6 del reloj, sin > 0.7): bajar extra ~55px
-    const extraY = Math.sin(angle) > 0.7 ? 55 : 0;
-    const ny = cy + ry * Math.sin(angle) + extraY;
+    // Limpiar cables SVG
+    const cableSvg = document.getElementById('mk-cables-svg');
+    Array.from(cableSvg.children).forEach(c => { if (c.tagName !== 'defs') c.remove(); });
 
-    // ── Cable: línea glow + corriente animada ──
-    const ns = 'http://www.w3.org/2000/svg';
-    const glow = document.createElementNS(ns, 'line');
-    glow.setAttribute('x1', nx); glow.setAttribute('y1', ny);
-    glow.setAttribute('x2', cx); glow.setAttribute('y2', cy);
-    glow.setAttribute('class', 'mk-cable-glow');
-    cableSvg.appendChild(glow);
+    // Radio de la elipse — más amplio en móvil para llenar pantalla
+    const isMob = W < 600;
+    const rx = isMob ? W * .36 : W * .30;
+    const ry = isMob ? H * .34 : H * .30;
+    const n  = state.modulosSeleccionados.length;
 
-    const cable = document.createElementNS(ns, 'line');
-    cable.setAttribute('x1', nx); cable.setAttribute('y1', ny);
-    cable.setAttribute('x2', cx); cable.setAttribute('y2', cy);
-    cable.setAttribute('class', 'mk-cable');
-    cable.style.animationDelay = `${-i * 0.06}s`;
-    cableSvg.appendChild(cable);
+    state.modulosSeleccionados.forEach((nombre, i) => {
+      const angle  = -Math.PI / 2 + (2 * Math.PI * i) / n;
+      const nx     = cx + rx * Math.cos(angle);
+      const extraY = Math.sin(angle) > 0.7 ? 20 : 0;
+      const ny     = cy + ry * Math.sin(angle) + extraY;
 
-    // ── Punto de corriente viajando por el cable ──
-    const dot = document.createElementNS(ns, 'circle');
-    dot.setAttribute('r', '5');
-    dot.setAttribute('fill', '#e879f9');
-    dot.setAttribute('filter', 'url(#mk-glow-filter)');
-    const motion = document.createElementNS(ns, 'animateMotion');
-    motion.setAttribute('dur', `${.8 + i * .12}s`);
-    motion.setAttribute('repeatCount', 'indefinite');
-    motion.setAttribute('path', `M${nx},${ny} L${cx},${cy}`);
-    dot.appendChild(motion);
-    cableSvg.appendChild(dot);
+      // Cable glow + corriente
+      const ns = 'http://www.w3.org/2000/svg';
+      const glow = document.createElementNS(ns, 'line');
+      glow.setAttribute('x1', nx); glow.setAttribute('y1', ny);
+      glow.setAttribute('x2', cx); glow.setAttribute('y2', cy);
+      glow.setAttribute('class', 'mk-cable-glow');
+      cableSvg.appendChild(glow);
 
-    // ── Tarjeta del módulo (color según grupo) ──
-    const mod   = state.modulosDisponibles?.find(m => (m.nombre || m) === nombre);
-    const grupo = mod?.grupo || 'piensa';
-    const colorClass = grupo === 'sensores' ? 'mk-sensores'
-                     : grupo === 'actua'    ? 'mk-actua'
-                     :                       'mk-piensa';
-    const dotColor = grupo === 'sensores' ? '#22d3ee'
-                   : grupo === 'actua'    ? '#fbbf24'
-                   :                       '#e879f9';
-    dot.setAttribute('fill', dotColor);   // color del punto viajero = mismo grupo
+      const cable = document.createElementNS(ns, 'line');
+      cable.setAttribute('x1', nx); cable.setAttribute('y1', ny);
+      cable.setAttribute('x2', cx); cable.setAttribute('y2', cy);
+      cable.setAttribute('class', 'mk-cable');
+      cable.style.animationDelay = `${-i * 0.06}s`;
+      cableSvg.appendChild(cable);
 
-    const node = document.createElement('div');
-    node.className = `mk-node ${colorClass}`;
-    node.innerHTML = `
-      <div class="mk-node-num">⚡ ${String(i+1).padStart(2,'0')}</div>
-      <div class="mk-node-name">${nombre}</div>`;
-    node.style.left = nx + 'px';
-    node.style.top  = ny + 'px';
-    document.body.appendChild(node);
-  });
+      // Punto viajero
+      const dot = document.createElementNS(ns, 'circle');
+      dot.setAttribute('r', '5');
+      dot.setAttribute('filter', 'url(#mk-glow-filter)');
+      const motion = document.createElementNS(ns, 'animateMotion');
+      motion.setAttribute('dur', `${.8 + i * .12}s`);
+      motion.setAttribute('repeatCount', 'indefinite');
+      motion.setAttribute('path', `M${nx},${ny} L${cx},${cy}`);
+      dot.appendChild(motion);
+      cableSvg.appendChild(dot);
 
-  // Secuencia de aparición — reset fiable antes de lanzar animación
-  setTimeout(() => {
-    [centerBlock, nameBlock].forEach(el => {
-      el.style.animation = '';
-      el.style.opacity   = '';
-      void el.offsetWidth;
+      // Color por grupo
+      const mod      = state.modulosDisponibles?.find(m => (m.nombre || m) === nombre);
+      const grupo    = mod?.grupo || 'piensa';
+      const colorClass = grupo === 'sensores' ? 'mk-sensores'
+                       : grupo === 'actua'    ? 'mk-actua'
+                       :                       'mk-piensa';
+      const dotColor = grupo === 'sensores' ? '#22d3ee'
+                     : grupo === 'actua'    ? '#fbbf24'
+                     :                       '#e879f9';
+      dot.setAttribute('fill', dotColor);
+
+      const node = document.createElement('div');
+      node.className = `mk-node ${colorClass}`;
+      node.innerHTML = `
+        <div class="mk-node-num">⚡ ${String(i+1).padStart(2,'0')}</div>
+        <div class="mk-node-name">${nombre}</div>`;
+      node.style.left = nx + 'px';
+      node.style.top  = ny + 'px';
+      document.body.appendChild(node);
     });
-    centerBlock.classList.add('mk-in');
-    nameBlock.classList.add('mk-in');
-  }, 400);
 
-  document.querySelectorAll('.mk-node').forEach((node, i) => {
+    // Animaciones de entrada
     setTimeout(() => {
-      void node.offsetWidth;
-      node.classList.add('mk-in');
-    }, 700 + i * 180);
+      [centerBlock, nameBlock].forEach(el => {
+        el.style.animation = '';
+        el.style.opacity   = '';
+        void el.offsetWidth;
+      });
+      centerBlock.classList.add('mk-in');
+      nameBlock.classList.add('mk-in');
+    }, 400);
+
+    document.querySelectorAll('.mk-node').forEach((node, i) => {
+      setTimeout(() => {
+        void node.offsetWidth;
+        node.classList.add('mk-in');
+      }, 700 + i * 180);
+    });
   });
 }
 
 // ── Canvas: red neuronal con forma de cerebro ──────────────
-function startBrainCanvas(canvas) {
+function startBrainCanvas(canvas, cxIn, cyIn) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
 
-  // Nodos distribuidos en una elipse (forma de cerebro) — mismo centro que los módulos
-  const cx = W * .5, cy = H * .50;
+  // Centro = posición real del cerebro (pasada desde mostrarMockup)
+  const cx = cxIn ?? W * .5;
+  const cy = cyIn ?? H * .5;
   const rx = W * .28, ry = H * .25;
   const nodes = [];
 
