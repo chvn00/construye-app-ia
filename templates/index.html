@@ -66,6 +66,18 @@ body::after {
   .telecom-row { font-size: clamp(.85rem, 3.5vw, 1.1rem) !important; gap: 6px !important; }
   .side-icon { font-size: 1em !important; }
 
+  /* ── Íconos laterales: ocultar en todas las páginas menos inicio ── */
+  #v-registro .side-icon, #v-modulos .side-icon, #v-propuesta .side-icon,
+  #v-evaluando .side-icon, #v-resultado .side-icon, #v-ranking .side-icon {
+    display: none !important;
+  }
+  /* Con los íconos quitados el texto tiene el ancho completo → más grande */
+  #v-registro .telecom-row, #v-modulos .telecom-row, #v-propuesta .telecom-row,
+  #v-evaluando .telecom-row, #v-resultado .telecom-row, #v-ranking .telecom-row {
+    font-size: clamp(1rem, 5vw, 1.3rem) !important;
+    white-space: nowrap !important;
+  }
+
   /* ── Logos globales ── */
   img[src*="escudo5"]    { height: 44px !important; width: auto !important; }
   img[src*="Recurso%203"]{ height: 44px !important; width: auto !important; }
@@ -89,12 +101,9 @@ body::after {
   #v-registro { justify-content: center; }
   #v-registro img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
   #v-registro img[src*="Recurso%203"] { height: 82px !important; }
-  #v-registro .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
-
   /* ── Módulos ── */
   #v-modulos img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
   #v-modulos img[src*="Recurso%203"] { height: 82px !important; }
-  #v-modulos .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
   #v-modulos { gap: 8px; padding-top: 10px; }
   .mod-subtitle { display: none !important; }
   #modulos-columns { grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
@@ -116,7 +125,6 @@ body::after {
   /* ── Propuesta (nombre de app) ── */
   #v-propuesta img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
   #v-propuesta img[src*="Recurso%203"] { height: 82px !important; }
-  #v-propuesta .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
   #v-propuesta { gap: 10px; padding-top: 10px; }
   .prop-fields { flex-direction: column; }
   #prop-flow {
@@ -142,7 +150,7 @@ body::after {
   /* ── Resultado ── */
   #v-resultado img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
   #v-resultado img[src*="Recurso%203"] { height: 82px !important; }
-  #v-resultado .telecom-row { font-size: clamp(.6rem, 3.8vw, .95rem) !important; white-space: nowrap !important; }
+  /* telecom resultado cubierto por regla consolidada arriba */
   #v-resultado { gap: 8px; }
   /* Ocultar header desktop, mostrar cajitas móvil */
   .res-header-desktop { display: none !important; }
@@ -217,7 +225,6 @@ body::after {
   /* ── Ranking ── */
   #v-ranking img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
   #v-ranking img[src*="Recurso%203"] { height: 82px !important; }
-  #v-ranking .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
   #v-ranking { gap: 10px; padding-top: 10px; }
   .rank-card { padding: 10px 12px; gap: 8px; flex-wrap: wrap; }
   .rank-mods { display: none; }
