@@ -228,6 +228,12 @@ async def root():
     return FileResponse("templates/index.html")
 
 
+@app.get("/ping")
+async def ping():
+    """Keep-alive endpoint para evitar cold starts en Railway."""
+    return {"status": "ok"}
+
+
 @app.get("/admin")
 async def admin_page():
     return FileResponse("templates/admin.html")

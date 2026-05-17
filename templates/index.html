@@ -2920,6 +2920,9 @@ function nuevoEquipo() {
 // Arrancar screensaver al cargar la página
 window.addEventListener('load', iniciarScreensaver);
 
+// Keep-alive: ping cada 4 min para evitar cold start en Railway
+setInterval(() => fetch('/ping').catch(() => {}), 4 * 60 * 1000);
+
 // ── Aro dorado en todos los escudos (excepto los que ya lo tienen) ──
 function addGoldenRings() {
   document.querySelectorAll('img[src*="escudo5"]').forEach(img => {
