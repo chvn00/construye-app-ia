@@ -405,7 +405,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   display: grid; grid-template-columns: 1fr 1fr 1fr;
   gap: 12px; width: 100%; max-width: 1020px;
 }
-.mod-col { display: flex; flex-direction: column; gap: 6px; }
+.mod-col { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 .col-header {
   display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px;
   border-radius: 10px; font-size: 1rem; font-weight: 800;
@@ -415,7 +415,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
 .col-piensa   .col-header { background: rgba(168,85,247,.1); border: 1px solid rgba(168,85,247,.3); color: #c084fc; }
 .col-actua    .col-header { background: rgba(251,146,60,.1);  border: 1px solid rgba(251,146,60,.3);  color: #fb923c; }
 /* Cards container inside each column */
-.col-cards { display: flex; flex-direction: column; gap: 6px; }
+.col-cards { display: flex; flex-direction: column; gap: 6px; flex: 1; }
 
 /* ── Module card ─────────────────────────────────────────── */
 .modulo-card {
@@ -424,7 +424,7 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   background: var(--card); border: 2px solid var(--card-border);
   border-radius: 10px; cursor: pointer; user-select: none; position: relative;
   transition: transform .15s, border-color .2s, background .2s, box-shadow .2s;
-  min-height: 72px;
+  min-height: 72px; flex: 1;
 }
 .modulo-card:hover { transform: translateY(-3px);
   border-color: color-mix(in srgb, var(--accent) 55%, transparent);
