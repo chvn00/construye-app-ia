@@ -129,19 +129,20 @@ body::after {
 
   /* ── Evaluando ── */
   #v-evaluando { gap: 14px; }
-  #v-evaluando img[src*="escudo5"]     { height: 70px !important; width: 70px !important; }
-  #v-evaluando img[src*="Recurso%203"] { height: 70px !important; }
-  /* Contenedor del aro en evaluando */
+  #v-evaluando img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
+  #v-evaluando img[src*="Recurso%203"] { height: 82px !important; }
+  /* Contenedor del aro en evaluando: mismo tamaño que las demás páginas */
+  #v-evaluando [data-has-ring],
   #v-evaluando div[style*="width:268px"] {
-    width: 70px !important; height: 70px !important;
-  }
-  #v-evaluando div[style*="width:240px"] {
-    width: 70px !important; height: 70px !important;
+    width: 100px !important; height: 100px !important;
   }
   .ia-eval-word { font-size: clamp(3rem, 15vw, 5rem) !important; }
   .eval-title-text { font-size: clamp(1.2rem, 5vw, 1.8rem) !important; }
 
   /* ── Resultado ── */
+  #v-resultado img[src*="escudo5"]     { height: 82px !important; width: 82px !important; }
+  #v-resultado img[src*="Recurso%203"] { height: 82px !important; }
+  #v-resultado .telecom-row { font-size: clamp(.95rem, 4vw, 1.2rem) !important; }
   #v-resultado { gap: 8px; }
   .res-header { padding: 12px 14px 10px; }
   .res-header-left strong { font-size: 1.1rem; }
@@ -2462,17 +2463,17 @@ function mostrarMockup(desc) {
 
   // Parar canvas anterior y arrancar nuevo
   if (_mkCanvasStop) { _mkCanvasStop(); _mkCanvasStop = null; }
+  // Usar visualViewport para coincidir exactamente con top:50%/left:50% de CSS en iOS Safari
+  const W = (window.visualViewport?.width  ?? window.innerWidth);
+  const H = (window.visualViewport?.height ?? window.innerHeight);
   const canvas = document.getElementById('mk-canvas');
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+  canvas.width  = W;
+  canvas.height = H;
   _mkCanvasStop = startBrainCanvas(canvas);
 
   // Limpiar cables SVG anteriores (preservar defs)
   const cableSvg = document.getElementById('mk-cables-svg');
   Array.from(cableSvg.children).forEach(c => { if (c.tagName !== 'defs') c.remove(); });
-
-  // Posiciones en círculo equidistante alrededor del centro
-  const W  = window.innerWidth,  H  = window.innerHeight;
   const cx = W * .5,             cy = H * .50;   // cerebro en el centro exacto
   const isMob = W < 600;
   const rx = isMob ? W * .36 : W * .30;         // radio elipse (más amplio en móvil)
