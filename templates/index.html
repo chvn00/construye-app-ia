@@ -1871,14 +1871,9 @@ async function irACategoria() {
   document.getElementById('cat-reveal').style.display = 'none';
   document.getElementById('cat-spinner').style.display = 'flex';
 
-  // Fetch selected category AND all images in parallel
-  const [selPromise] = [
-    fetch('/api/categoria').then(r => r.json()).catch(() => null),
-    Object.keys(catImgs).length === 0 ? preloadCatImgs() : Promise.resolve(),
-  ];
-
-  // Wait a tick so images are ready
-  await preloadCatImgs();
+  // Fetch categoría seleccionada; precargar imágenes solo si no están ya cargadas
+  if (Object.keys(catImgs).length === 0) await preloadCatImgs();
+  const selPromise = fetch('/api/categoria').then(r => r.json()).catch(() => null);
 
   const TOTAL  = 32;   // total frames
   const T_MIN  = 45;   // ms at start (fast)
@@ -1892,19 +1887,20 @@ async function irACategoria() {
     return Math.round(T_MIN + (T_MAX - T_MIN) * Math.pow(t, 2.2));
   }
 
-  function spin() {
-    const catId  = CAT_IDS[frame % CAT_IDS.length];
-    const cat    = catImgs[catId] || {};
+  const isMob = window.innerWidth < 600;
 
-    // Update background image + accent color
-    if (cat.imagen) {
+  function spin() {
+    const catId = CAT_IDS[frame % CAT_IDS.length];
+    const cat   = catImgs[catId] || {};
+
+    // En móvil solo cambia color+texto (no background image en cada frame — muy costoso)
+    if (!isMob && cat.imagen) {
       document.getElementById('cat-bg').style.backgroundImage = `url('${cat.imagen}')`;
     }
     if (cat.color) {
       document.documentElement.style.setProperty('--accent', cat.color);
     }
 
-    // Update spinner text with a quick flash
     const spinner = document.getElementById('cat-spinner');
     spinner.style.opacity = '0';
     spinner.style.transform = 'scale(.8)';
@@ -1920,12 +1916,11 @@ async function irACategoria() {
     if (frame < TOTAL) {
       setTimeout(spin, getDelay(frame));
     } else {
-      // Done — wait for API result then show reveal
       selPromise.then(data => {
         if (!data) data = {id:'industria',nombre:'Industria',color:'#FF6B35',imagen:null,todas_imagenes:[]};
         state.categoria = data;
         document.documentElement.style.setProperty('--accent', data.color);
-        // Final frame: lock on selected category background
+        // Fondo solo al final (en móvil también)
         if (data.imagen) document.getElementById('cat-bg').style.backgroundImage = `url('${data.imagen}')`;
         setTimeout(() => mostrarCat(data), 350);
       });
@@ -2833,6 +2828,7 @@ function mostrarAnuncioEspecial() {
 }
 
 function launchFireworks() {
+  const mob = window.innerWidth < 600;
   const canvas = document.getElementById('fw-canvas');
   canvas.style.display = 'block';
   canvas.width  = window.innerWidth;
@@ -2840,25 +2836,30 @@ function launchFireworks() {
   const ctx = canvas.getContext('2d');
   const colors = ['#ff6b6b','#feca57','#48dbfb','#ff9ff3','#54a0ff','#26de81','#ff9f43','#fff'];
   const particles = [];
+  const PER_BURST = mob ? 28 : 90;
+  const MAX_BURST = mob ? 4  : 10;
+  const INTERVAL  = mob ? 500 : 380;
 
   function burst(x, y) {
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < PER_BURST; i++) {
       const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 10 + 3;
+      const speed = Math.random() * (mob ? 7 : 10) + 3;
       particles.push({ x, y,
         vx: Math.cos(angle)*speed, vy: Math.sin(angle)*speed,
         color: colors[Math.floor(Math.random()*colors.length)],
-        alpha: 1, size: Math.random()*4+2, decay: Math.random()*.018+.008 });
+        alpha: 1, size: Math.random()*(mob?3:4)+2, decay: Math.random()*.022+.01 });
     }
   }
 
-  let n = 0;
+  let n = 0, lastFw = 0;
   const iv = setInterval(() => {
     burst(Math.random()*canvas.width, Math.random()*canvas.height*.55);
-    if (++n >= 10) clearInterval(iv);
-  }, 380);
+    if (++n >= MAX_BURST) clearInterval(iv);
+  }, INTERVAL);
 
-  function draw() {
+  function draw(now) {
+    if (mob && now - lastFw < 33) { requestAnimationFrame(draw); return; } // 30fps en móvil
+    lastFw = now;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     for (let i = particles.length-1; i >= 0; i--) {
       const p = particles[i];
@@ -2869,10 +2870,10 @@ function launchFireworks() {
       ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
     }
     ctx.globalAlpha = 1;
-    if (particles.length > 0 || n < 10) requestAnimationFrame(draw);
+    if (particles.length > 0 || n < MAX_BURST) requestAnimationFrame(draw);
     else { canvas.style.display='none'; ctx.clearRect(0,0,canvas.width,canvas.height); }
   }
-  draw();
+  requestAnimationFrame(draw);
 }
 
 function animateScore(target) {
