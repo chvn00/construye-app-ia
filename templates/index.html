@@ -155,9 +155,10 @@ body::after {
   .res-panel h3 { font-size: .85rem; }
   .res-panel p  { font-size: .88rem; }
 
-  /* ── Registro: input y fuentes más pequeños ── */
+  /* ── Registro: input centrado, misma fuente que app name ── */
   #v-registro h2 { font-size: 1.3rem; }
-  #inp-equipo { font-size: 1rem !important; padding: 12px 16px !important; max-width: 80vw !important; width: 80vw !important; }
+  #v-registro .form-group { align-items: center !important; }
+  #inp-equipo { font-size: 1.3rem !important; padding: 12px 20px !important; max-width: 80vw !important; width: 80vw !important; text-align: center !important; }
   #inp-app    { max-width: 80vw !important; width: 80vw !important; }
 
   /* ── Módulos: título y subtítulo ── */
@@ -205,10 +206,10 @@ body::after {
   .rank-mods { display: none; }
 
   /* ── Mockup (móvil) ── */
-  .mk-node { width: clamp(85px, 22vw, 140px) !important; padding: 7px 8px !important; border-radius: 14px !important; }
-  .mk-node-name { font-size: .6rem !important; line-height: 1.2 !important; }
-  .mk-node-num  { font-size: .55rem !important; }
-  #mk-brain-img { width: clamp(100px, 28vw, 180px) !important; }
+  .mk-node { width: clamp(110px, 28vw, 160px) !important; padding: 10px 10px !important; border-radius: 16px !important; }
+  .mk-node-name { font-size: .72rem !important; line-height: 1.25 !important; }
+  .mk-node-num  { font-size: .62rem !important; }
+  #mk-brain-img { width: clamp(110px, 30vw, 180px) !important; }
 }
 
 @keyframes fadeUp {
@@ -2561,8 +2562,8 @@ function startBrainCanvas(canvas) {
   const ctx = canvas.getContext('2d');
   const W = canvas.width, H = canvas.height;
 
-  // Nodos distribuidos en una elipse (forma de cerebro)
-  const cx = W * .5, cy = H * .42;
+  // Nodos distribuidos en una elipse (forma de cerebro) — mismo centro que los módulos
+  const cx = W * .5, cy = H * .50;
   const rx = W * .28, ry = H * .25;
   const nodes = [];
 
