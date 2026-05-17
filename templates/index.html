@@ -144,10 +144,27 @@ body::after {
   #v-resultado img[src*="Recurso%203"] { height: 82px !important; }
   #v-resultado .telecom-row { font-size: clamp(.6rem, 3.8vw, .95rem) !important; white-space: nowrap !important; }
   #v-resultado { gap: 8px; }
-  .res-header { padding: 12px 14px 10px; }
-  .res-header-left strong { font-size: 1.1rem; }
-  .res-header-left span   { font-size: .95rem; }
-  #pos-badge { position: static; font-size: .75rem; padding: 4px 12px; margin-top: 4px; }
+  /* Ocultar header desktop, mostrar cajitas móvil */
+  .res-header-desktop { display: none !important; }
+  .res-info-mobile {
+    display: flex; flex-direction: column; gap: 8px;
+    width: 100%; max-width: 100%;
+  }
+  .res-info-box {
+    display: flex; flex-direction: column; gap: 4px;
+    padding: 10px 16px;
+    background: var(--card); border: 1px solid var(--card-border);
+    border-radius: 14px; width: 100%;
+  }
+  .res-info-label {
+    font-size: .72rem; font-weight: 700; letter-spacing: .5px;
+    color: var(--sub); text-transform: uppercase;
+  }
+  .res-info-box strong, .res-info-box span.name-shine { font-size: 1.1rem; }
+  .res-pos-text {
+    font-size: 1rem; font-weight: 800; text-align: center;
+    color: var(--accent);
+  }
   .res-main { flex-direction: column; gap: 8px; }
   .score-panel { min-width: unset; width: 100%; padding: 14px 16px; }
   .res-panels { width: 100%; gap: 8px; }
@@ -681,6 +698,9 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   background: color-mix(in srgb, var(--accent) 22%, transparent);
   border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
 }
+
+/* Cajitas móvil resultado — ocultas en desktop */
+.res-info-mobile { display: none; }
 
 /* Two-column main area */
 .res-main { display: flex; gap: 16px; width: 100%; max-width: 1020px; align-items: stretch; }
@@ -1473,13 +1493,29 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
     </div>
   </div>
 
-  <div class="res-header">
+  <!-- Header desktop -->
+  <div class="res-header res-header-desktop">
     <div class="res-header-left">
       <div id="res-badge" class="badge res-cat-badge"></div>
       <strong id="res-equipo-nombre" class="name-shine"></strong>
       <span id="res-app-nombre" class="name-shine"></span>
     </div>
     <span id="pos-badge"></span>
+  </div>
+
+  <!-- Cajitas móvil: equipo / app / participantes -->
+  <div class="res-info-mobile">
+    <div class="res-info-box">
+      <span class="res-info-label">👥 Equipo</span>
+      <strong id="res-equipo-nombre-mob" class="name-shine"></strong>
+    </div>
+    <div class="res-info-box">
+      <span class="res-info-label">📱 App</span>
+      <span id="res-app-nombre-mob" class="name-shine"></span>
+    </div>
+    <div class="res-info-box">
+      <span id="pos-badge-mob" class="res-pos-text"></span>
+    </div>
   </div>
 
   <div class="res-main">
@@ -2712,14 +2748,17 @@ function esperarMockup() {
 // ── RESULTADO ────────────────────────────────────────────────
 function mostrarResultado(data) {
   if (_neuralStop) { _neuralStop(); _neuralStop = null; }
-  document.getElementById('res-badge').textContent         = state.categoria.nombre;
-  document.getElementById('res-equipo-nombre').textContent = state.equipo;
-  document.getElementById('res-app-nombre').textContent    = state.appNombre;
+  document.getElementById('res-badge').textContent              = state.categoria.nombre;
+  document.getElementById('res-equipo-nombre').textContent      = state.equipo;
+  document.getElementById('res-app-nombre').textContent         = state.appNombre;
+  document.getElementById('res-equipo-nombre-mob').textContent  = state.equipo;
+  document.getElementById('res-app-nombre-mob').textContent     = state.appNombre;
   document.getElementById('res-fortaleza').textContent     = data.fortalezas || '—';
   document.getElementById('res-mejora').textContent        = data.mejoras    || '—';
   document.getElementById('res-mensaje').textContent       = data.mensaje    || '—';
-  document.getElementById('pos-badge').textContent         =
-    data.posicion ? `🏅 #${data.posicion} de ${data.total_equipos} equipo${data.total_equipos !== 1 ? 's' : ''}` : '';
+  const posTxt = data.posicion ? `🏅 Posición #${data.posicion} de ${data.total_equipos} equipo${data.total_equipos !== 1 ? 's' : ''}` : '';
+  document.getElementById('pos-badge').textContent     = posTxt;
+  document.getElementById('pos-badge-mob').textContent = posTxt;
   showView('resultado');
   animateScore(data.puntaje || 0);
   if (data.puntaje === 101) {
