@@ -1863,6 +1863,13 @@ async function preloadCatImgs() {
   try {
     const res = await fetch('/api/todas-categorias');
     catImgs = await res.json();
+    // Forzar decodificación de todas las imágenes antes de la ruleta
+    // así el browser no las decodifica en caliente frame a frame
+    await Promise.allSettled(
+      Object.values(catImgs)
+        .filter(c => c.imagen)
+        .map(c => { const img = new Image(); img.src = c.imagen; return img.decode?.() ?? Promise.resolve(); })
+    );
   } catch {}
 }
 
@@ -1893,8 +1900,8 @@ async function irACategoria() {
     const catId = CAT_IDS[frame % CAT_IDS.length];
     const cat   = catImgs[catId] || {};
 
-    // En móvil solo cambia color+texto (no background image en cada frame — muy costoso)
-    if (!isMob && cat.imagen) {
+    // Cambiar fondo: en móvil cada 2 frames (imágenes ya pre-decodificadas, es fluido)
+    if (cat.imagen && (!isMob || frame % 2 === 0)) {
       document.getElementById('cat-bg').style.backgroundImage = `url('${cat.imagen}')`;
     }
     if (cat.color) {
