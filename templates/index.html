@@ -61,8 +61,8 @@ body::after {
 @media (max-width: 768px) {
   html, body { overflow: auto; }
 
-  /* Safe area para PWA standalone en iPhone */
-  .vista { padding-top: max(16px, env(safe-area-inset-top, 16px)); }
+  /* Safe area para PWA standalone en iPhone (Dynamic Island ~59px) */
+  .vista { padding-top: max(20px, env(safe-area-inset-top, 20px)); }
   #v-inicio, #v-categoria, #v-evaluando { padding-top: env(safe-area-inset-top, 0px); }
 
   /* Logo santoto: multiply invisible en fondo oscuro PWA, usar screen */
@@ -71,10 +71,10 @@ body::after {
   /* Páginas fijas (poco contenido) */
   #v-inicio, #v-categoria, #v-evaluando { position: fixed; overflow: hidden; }
 
-  /* Páginas con scroll */
+  /* Páginas con scroll — padding extra para Dynamic Island */
   #v-registro, #v-modulos, #v-propuesta, #v-resultado, #v-ranking {
     position: relative; min-height: 100dvh;
-    padding: max(env(safe-area-inset-top,16px), 16px) 12px 60px; justify-content: flex-start;
+    padding: calc(env(safe-area-inset-top, 20px) + 16px) 12px calc(env(safe-area-inset-bottom, 0px) + 60px); justify-content: flex-start;
   }
 
   /* ── Títulos y texto ── */
