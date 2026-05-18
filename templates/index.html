@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="App con IA">
 <meta name="theme-color" content="#0d0d1a">
 <link rel="manifest" href="/static/manifest.json">
@@ -65,20 +65,25 @@ body::after {
 @media (max-width: 768px) {
   html, body { overflow: auto; }
 
-  /* Safe area para PWA standalone en iPhone (Dynamic Island ~59px) */
-  .vista { padding-top: max(20px, env(safe-area-inset-top, 20px)); }
-  #v-inicio, #v-categoria, #v-evaluando { padding-top: env(safe-area-inset-top, 0px); }
-
   /* Logo santoto: multiply invisible en fondo oscuro PWA, usar screen */
   img[src*="Recurso%203"] { mix-blend-mode: screen !important; }
 
   /* Páginas fijas (poco contenido) */
   #v-inicio, #v-categoria, #v-evaluando { position: fixed; overflow: hidden; }
 
-  /* Páginas con scroll — padding extra para Dynamic Island */
+  /* Páginas con scroll */
   #v-registro, #v-modulos, #v-propuesta, #v-resultado, #v-ranking {
     position: relative; min-height: 100dvh;
-    padding: calc(env(safe-area-inset-top, 20px) + 16px) 12px calc(env(safe-area-inset-bottom, 0px) + 60px); justify-content: flex-start;
+    padding: 16px 12px 60px; justify-content: flex-start;
+  }
+
+  /* Franja inferior home indicator */
+  #pwa-bottom-bar {
+    display: block;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: env(safe-area-inset-bottom, 0px);
+    background: #0d0d1a; z-index: 9999;
+    pointer-events: none;
   }
 
   /* ── Títulos y texto ── */
@@ -3064,5 +3069,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<div id="pwa-bottom-bar"></div>
 </body>
 </html>
