@@ -26,8 +26,12 @@
   --font: 'Segoe UI', Tahoma, Arial, sans-serif;
 }
 
-html, body { height: 100%; width: 100%; overflow: hidden;
-  background: var(--bg); color: var(--text); font-family: var(--font); }
+html { height: 100%; width: 100%; background: var(--bg); }
+body { height: 100%; width: 100%; overflow: hidden;
+  background: var(--bg); color: var(--text); font-family: var(--font);
+  /* Extiende el fondo al safe area inferior (home indicator iPhone) */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-sizing: border-box; }
 
 body::before, body::after {
   content: ''; position: fixed; border-radius: 50%;
