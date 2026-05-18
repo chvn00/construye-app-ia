@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -61,13 +61,20 @@ body::after {
 @media (max-width: 768px) {
   html, body { overflow: auto; }
 
+  /* Safe area para PWA standalone en iPhone */
+  .vista { padding-top: max(16px, env(safe-area-inset-top, 16px)); }
+  #v-inicio, #v-categoria, #v-evaluando { padding-top: env(safe-area-inset-top, 0px); }
+
+  /* Logo santoto: multiply invisible en fondo oscuro PWA, usar screen */
+  img[src*="Recurso%203"] { mix-blend-mode: screen !important; }
+
   /* Páginas fijas (poco contenido) */
   #v-inicio, #v-categoria, #v-evaluando { position: fixed; overflow: hidden; }
 
   /* Páginas con scroll */
   #v-registro, #v-modulos, #v-propuesta, #v-resultado, #v-ranking {
     position: relative; min-height: 100dvh;
-    padding: 16px 12px 60px; justify-content: flex-start;
+    padding: max(env(safe-area-inset-top,16px), 16px) 12px 60px; justify-content: flex-start;
   }
 
   /* ── Títulos y texto ── */
@@ -887,10 +894,10 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   border-color: rgba(34,211,238,.95); border-style: solid;
   filter: drop-shadow(0 0 6px rgba(34,211,238,.8));
 }
-.cam-corner.tl { top: 14px; left: 14px;  border-width: 3px 0 0 3px; }
-.cam-corner.tr { top: 14px; right: 14px; border-width: 3px 3px 0 0; }
-.cam-corner.bl { bottom: 14px; left: 14px;  border-width: 0 0 3px 3px; }
-.cam-corner.br { bottom: 14px; right: 14px; border-width: 0 3px 3px 0; }
+.cam-corner.tl { top: calc(14px + env(safe-area-inset-top,0px));    left: calc(14px + env(safe-area-inset-left,0px));   border-width: 3px 0 0 3px; }
+.cam-corner.tr { top: calc(14px + env(safe-area-inset-top,0px));    right: calc(14px + env(safe-area-inset-right,0px)); border-width: 3px 3px 0 0; }
+.cam-corner.bl { bottom: calc(14px + env(safe-area-inset-bottom,0px)); left: calc(14px + env(safe-area-inset-left,0px));   border-width: 0 0 3px 3px; }
+.cam-corner.br { bottom: calc(14px + env(safe-area-inset-bottom,0px)); right: calc(14px + env(safe-area-inset-right,0px)); border-width: 0 3px 3px 0; }
 
 /* ── Línea de escaneo ── */
 .cam-scan {
