@@ -1219,6 +1219,15 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
     <button class="btn-ghost btn-ghost-xl" onclick="verRanking()">🏆 Ver Ranking</button>
   </div>
 
+  <!-- QR para jugar desde el celular -->
+  <div style="display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.85;">
+    <div style="background:#fff;border-radius:10px;padding:6px;display:inline-block;box-shadow:0 0 12px rgba(124,58,237,.4);">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=90x90&data=https://construye-app-ia-production.up.railway.app&color=3b0d8a&bgcolor=ffffff"
+           alt="QR" width="90" height="90" style="display:block;border-radius:4px;">
+    </div>
+    <span style="font-size:.72rem;color:rgba(255,255,255,.6);letter-spacing:.04em;">📱 Escanea y juega desde tu celular</span>
+  </div>
+
   <!-- Screensaver: mejores propuestas rotando -->
   <div id="screensaver">
     <div id="ss-card"></div>
