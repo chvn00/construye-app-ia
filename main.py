@@ -336,19 +336,40 @@ async def evaluar(propuesta: PropuestaInput):
         }
     else:
         flow = " → ".join(propuesta.modulos)
-        prompt = f"""Eres un evaluador justo para estudiantes de colegio en un reto de innovación tecnológica.
-Debes evaluar la calidad REAL de la propuesta, no solo el esfuerzo.
+
+        estilos = [
+            "Habla como un jurado de Silicon Valley: directo, con frases cortas e impacto. Usa metáforas tecnológicas.",
+            "Habla como un mentor entusiasta latinoamericano: cálido, motivador, con expresiones coloquiales y ejemplos concretos.",
+            "Habla como un inversionista analítico: enfocado en el impacto real, el mercado y la viabilidad de la idea.",
+            "Habla como un profesor innovador: pedagógico, usa analogías creativas y preguntas retóricas para guiar.",
+            "Habla como un emprendedor joven: energético, usa jerga moderna, celebra el atrevimiento y la creatividad.",
+            "Habla como un experto técnico: destaca la arquitectura de módulos, la lógica del flujo y la solidez técnica.",
+            "Habla como un diseñador de experiencias: enfocado en el usuario, la usabilidad y el impacto humano de la app.",
+        ]
+        estilo = random.choice(estilos)
+        angulos = [
+            "Enfócate especialmente en el impacto social de la idea.",
+            "Enfócate especialmente en la originalidad y creatividad de la combinación de módulos.",
+            "Enfócate especialmente en qué problema real del mundo resuelve esta app.",
+            "Enfócate especialmente en cómo esta app podría escalar o crecer en el futuro.",
+            "Enfócate especialmente en la coherencia entre la categoría elegida y los módulos seleccionados.",
+        ]
+        angulo = random.choice(angulos)
+
+        prompt = f"""Eres un evaluador justo para estudiantes en un reto de innovación tecnológica.
+Estilo de evaluación: {estilo}
+{angulo}
 
 APP: {propuesta.app_nombre}
 CATEGORÍA: {propuesta.categoria}
 FLUJO DE MÓDULOS: {flow}
 DESCRIPCIÓN: {propuesta.descripcion}
 
-Evalúa objetivamente según estos criterios:
-1. Creatividad e innovación de la idea (¿es original o genérica?)
-2. Coherencia entre los módulos y el problema que resuelven
-3. Claridad y detalle de la descripción (¿explica bien qué hace la app?)
-4. Potencial de impacto real en la categoría elegida
+Evalúa según estos criterios:
+1. Creatividad e innovación de la idea
+2. Coherencia entre módulos y el problema que resuelven
+3. Claridad y detalle de la descripción
+4. Potencial de impacto real en la categoría
 
 Responde ÚNICAMENTE con este JSON en español, sin texto adicional:
 {{"puntaje": 0, "fortalezas": "...", "mejoras": "...", "mensaje": "..."}}
@@ -359,9 +380,9 @@ Reglas estrictas:
   * 60-74: idea básica comprensible pero con poca profundidad
   * 75-84: buena idea, módulos coherentes, descripción clara
   * 85-100: idea innovadora, excelente coherencia, descripción detallada e impacto claro
-- fortalezas: lo más creativo o innovador de la propuesta (1 oración honesta)
-- mejoras: sugerencia concreta y útil para mejorar (1 oración)
-- mensaje: frase motivadora dirigida al equipo, máximo 15 palabras, usa emojis"""
+- fortalezas: 1 oración honesta con el estilo indicado, NO empieces siempre igual
+- mejoras: 1 sugerencia concreta y útil, varía la forma de expresarla
+- mensaje: frase motivadora original para el equipo, máximo 15 palabras, usa emojis, que sea diferente cada vez"""
 
         try:
             groq_key = os.environ.get("GROQ_API_KEY", "")
@@ -372,7 +393,7 @@ Reglas estrictas:
                     json={
                         "model": "llama3-8b-8192",
                         "messages": [{"role": "user", "content": prompt}],
-                        "temperature": 0.7,
+                        "temperature": 0.92,
                         "max_tokens": 300,
                     },
                 )
