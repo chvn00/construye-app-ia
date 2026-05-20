@@ -10,7 +10,6 @@
 <meta name="theme-color" content="#0d0d1a">
 <link rel="manifest" href="/static/manifest.json">
 <link rel="apple-touch-icon" href="/static/icon-192.png">
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <title>Construye tu App con IA · USTA</title>
 <style>
 /* ── Reset & Variables ─────────────────────────────────────────── */
@@ -1223,7 +1222,8 @@ p  { font-size: clamp(.9rem,1.5vw,1.1rem); line-height: 1.6; color: var(--sub); 
   <!-- QR para jugar desde el celular -->
   <div style="display:flex;flex-direction:column;align-items:center;gap:6px;opacity:.85;">
     <div style="background:#fff;border-radius:10px;padding:6px;display:inline-block;box-shadow:0 0 12px rgba(124,58,237,.4);">
-      <div id="inicio-qr"></div>
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAIAAAD6XpeDAAADwUlEQVR4nO2dwXHdMAxE7UzOrohtpQq3xYrSwPdVF8wQBlb6S753TGSS9g60A5CEPl+v1wd48ufpBcDvQTxjEM8YxDMG8YxBPGMQz5i/0X+Mr+/2yeb/f7+eK/rZLNe5rmNGa8jOe+ffjcgzBvGMQbwdPa/LbyIPiLwneqbii2Nhroq3dY0ZjR9B5BmDeMYg3u6ep87JKrnRXMjVormyeef1ecXvmB2TyDMG8YxBvJM8T0HkWyv/rqh/roy5sh41RJ4xiGcM4hnzmOcpfGII9uq69vkUEHnGIJ4xiHeS56m9KjvvKOSFK2vo+n0VfzcizxjEMwbxdvc8xVnEbE7WVUscyRppxVMVf7crRJ4xiGcM4hnz+dSddMXdgCmuN77DHt4VIs8YxDMG8Xa/n/dUXpV9ZjTlZF35nPo+IpFnDOIZg3i753nZGp1i/6zrfMpIemplj3Bl3mgNKxB5xiCeMYi3o+fdmbt0+cEo+Fk0jnreSo2XyDMG8YxBvFM97x3yoSHuW6ZYzwp43ubw2jQG8Yxp68OS9T9FXjiD8RW12ayPVvLFCCLPGMQzBvFO6rdZ6e+l3ntbQTFX195k9hkizxjEMwbxdvS8Sj2w4pGKNXR5m6K3ZwS1zc3htWkM4u2+n6c+36+4Az6TtUT1fYzKviB53obw2jQG8U7tw1Lxqq77dupa4jv36iTyjEE8YxDPmLb7eYo8Lxq/ss4uuvw1GpM8b3N4bRqDeCf1YVHkZIpeJ1cUtVD1ft4KRJ4xiGcM4p26nxc9rz5jubKG2ZQ7roxfWUNlPUSeMYhnDOKd2mNaUUt86n53xFN3ITi3uTm8No1BvN1rmxFP1TAr44xCHhatJ0Kd1xJ5xiCeMYh30p30rH8o7gNUnono6p0WjbkCed5B8No0BvFO7T3WdX4kel7hqTP5jDovrNxHJPKMQTxjEM8Y+XfSV97dlbMeI+l/2fG7zlsqzvgQecYgnjGIZ8zbfSd9BXV/zino4aI4z0nkGYN4xiDeqWdYsqzkT109xmahhlnxpzv3Aok8YxDPGMQ79QzLU3XRbI10Jn+2wp39Yog8YxDPGMQzpu37eXfeJc+Oo+ijVvk+XzRXFiLPGMQzBvFO8jwFCp8bgjMjlW9BZMe/wn7ehvDaNAbxjHkLz6vcW5iCPpbqPpldEHnGIJ4xiHeS5z3lAYpv98ym85nqb+9FEHnGIJ4xiLd7j+kuuu50V+qWU3wep/JNQfqwHASvTWMQz5jH7udBHSLPGMQzBvGMQTxjEM8YxDMG8T58+QEPEOfIJVjaGwAAAABJRU5ErkJggg=="
+           alt="QR" width="90" height="90" style="display:block;border-radius:4px;">
     </div>
     <span style="font-size:.72rem;color:rgba(255,255,255,.6);letter-spacing:.04em;">📱 Escanea y juega desde tu celular</span>
   </div>
@@ -3080,14 +3080,6 @@ if ('serviceWorker' in navigator) {
 </script>
 <div id="pwa-bottom-bar"></div>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  new QRCode(document.getElementById('inicio-qr'), {
-    text: 'https://construye-app-ia-production.up.railway.app',
-    width: 90, height: 90,
-    colorDark: '#3b0d8a', colorLight: '#ffffff',
-    correctLevel: QRCode.CorrectLevel.M
-  });
-});
 </script>
 </body>
 </html>
